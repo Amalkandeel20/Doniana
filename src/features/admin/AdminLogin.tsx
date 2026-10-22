@@ -15,7 +15,9 @@ const schema = z.object({
 });
 
 export function AdminLogin({ notAdmin }: { notAdmin?: boolean }) {
-  const [error, setError] = useState<string | null>(notAdmin ? t("admin.login.notAdmin") : null);
+  const [error, setError] = useState<string | null>(null);
+  // The form stays mounted when a sign-in resolves to a non-admin account, so derive this message.
+  const message = error ?? (notAdmin ? t("admin.login.notAdmin") : null);
   const { register, handleSubmit, formState } = useForm<z.infer<typeof schema>>({ resolver: zodResolver(schema) });
 
   const onSubmit = handleSubmit(async ({ email, password }) => {
@@ -45,7 +47,7 @@ export function AdminLogin({ notAdmin }: { notAdmin?: boolean }) {
           <Label htmlFor="password">{t("admin.login.password")}</Label>
           <Input id="password" type="password" dir="ltr" autoComplete="current-password" aria-invalid={!!formState.errors.password} {...register("password")} />
         </div>
-        <FieldError message={error ?? undefined} />
+        <FieldError message={message ?? undefined} />
         <Button type="submit" className="w-full" disabled={formState.isSubmitting} data-testid="admin-login-submit">
           {formState.isSubmitting ? t("admin.login.submitting") : t("admin.login.submit")}
         </Button>
