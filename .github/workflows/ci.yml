@@ -109,7 +109,7 @@ jobs:
             [ "$code" != "000" ] && [ "$code" != "502" ] && [ "$code" != "503" ] && break
             sleep 2
           done
-      - run: npx playwright install --with-deps chromium webkit
+      - run: npx playwright install --with-deps chromium
         timeout-minutes: 10
       - run: npx playwright test
       - name: Lighthouse (performance & accessibility budgets)

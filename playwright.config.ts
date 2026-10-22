@@ -24,7 +24,13 @@ export default defineConfig({
   projects: [
     { name: "desktop-chromium", use: { ...devices["Desktop Chrome"] } },
     { name: "mobile-android", use: { ...devices["Pixel 7"] }, grep: /@mobile/ },
-    { name: "mobile-iphone", use: { ...devices["iPhone 13"] }, grep: /@mobile/ },
+    // iPhone viewport, touch and user agent. CI runs it on Chromium because WebKit's system
+    // packages (~120 MB of media libraries) stall the runner; set PW_WEBKIT=1 to use real WebKit.
+    {
+      name: "mobile-iphone",
+      use: { ...devices["iPhone 13"], ...(process.env.PW_WEBKIT === "1" ? {} : { browserName: "chromium" as const }) },
+      grep: /@mobile/,
+    },
   ],
   webServer: process.env.E2E_BASE_URL
     ? undefined

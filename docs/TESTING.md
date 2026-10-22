@@ -17,7 +17,7 @@ npx supabase start
 npx supabase functions serve --env-file supabase/functions/.env &
 eval "$(npx supabase status -o env | sed 's/^/export /')"
 export VITE_SUPABASE_URL=$API_URL VITE_SUPABASE_ANON_KEY=$ANON_KEY SUPABASE_URL=$API_URL SUPABASE_SERVICE_ROLE_KEY=$SERVICE_ROLE_KEY
-npx playwright install chromium webkit
+npx playwright install chromium   # add webkit and PW_WEBKIT=1 for real Safari
 npm run e2e
 ```
 
