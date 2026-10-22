@@ -37,8 +37,10 @@ enable_refresh_token_rotation = true
 # Customers never sign up; administrator accounts are provisioned manually (docs/ADMIN-GUIDE.md).
 enable_signup = false
 
+# Keep the email provider ON (admins sign in with email + password). In the CLI this flag
+# enables/disables email auth entirely; new sign-ups are blocked by [auth] enable_signup above.
 [auth.email]
-enable_signup = false
+enable_signup = true
 enable_confirmations = false
 
 [edge_runtime]

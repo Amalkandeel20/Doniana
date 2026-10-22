@@ -21,7 +21,10 @@ export function AdminLogin({ notAdmin }: { notAdmin?: boolean }) {
   const onSubmit = handleSubmit(async ({ email, password }) => {
     setError(null);
     const { error: authError } = await supabase.auth.signInWithPassword({ email, password });
-    if (authError) setError(authError.status === 400 ? t("admin.login.invalid") : t("admin.login.error"));
+    if (authError) {
+      const invalid = authError.code === "invalid_credentials" || authError.status === 400;
+      setError(invalid ? t("admin.login.invalid") : t("admin.login.error"));
+    }
   });
 
   return (

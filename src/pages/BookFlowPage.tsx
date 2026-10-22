@@ -1,5 +1,5 @@
-import { useEffect, useRef, useState } from "react";
-import { Link, Navigate, useParams } from "react-router-dom";
+import { useEffect, useRef } from "react";
+import { Link, Navigate, useLocation, useNavigate, useParams } from "react-router-dom";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
@@ -16,15 +16,10 @@ import { useAsync } from "@/hooks/useAsync";
 import { t } from "@/i18n";
 import type { BookingResponse, ServiceCategory } from "@/types/models";
 
-const RESULT_KEY = "doniana.booking.result.v1";
-
-function loadResult(): BookingResponse | null {
-  try {
-    const raw = sessionStorage.getItem(RESULT_KEY);
-    return raw ? (JSON.parse(raw) as BookingResponse) : null;
-  } catch {
-    return null;
-  }
+// The confirmation lives in this history entry's state: a reload shows it again, but a fresh visit
+// to the booking page always starts a new booking.
+interface FlowLocationState {
+  bookingResult?: BookingResponse;
 }
 
 export default function BookFlowPage() {
@@ -40,7 +35,9 @@ export default function BookFlowPage() {
 function Flow({ category }: { category: ServiceCategory }) {
   const { state, dispatch } = useBooking();
   const catalog = useAsync(() => fetchCatalog(), []);
-  const [result, setResult] = useState<BookingResponse | null>(loadResult);
+  const location = useLocation();
+  const navigate = useNavigate();
+  const result = (location.state as FlowLocationState | null)?.bookingResult ?? null;
   const topRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -59,12 +56,7 @@ function Flow({ category }: { category: ServiceCategory }) {
   const goTo = (s: Step) => dispatch({ type: "goTo", step: s });
 
   const onBooked = (r: BookingResponse) => {
-    try {
-      sessionStorage.setItem(RESULT_KEY, JSON.stringify(r));
-    } catch {
-      /* ignore */
-    }
-    setResult(r);
+    navigate(location.pathname, { replace: true, state: { bookingResult: r } satisfies FlowLocationState });
     dispatch({ type: "reset", category });
   };
 
@@ -73,10 +65,7 @@ function Flow({ category }: { category: ServiceCategory }) {
       <div ref={topRef} className="container max-w-3xl scroll-mt-24 py-10">
         <SuccessView
           result={result}
-          onBookAnother={() => {
-            sessionStorage.removeItem(RESULT_KEY);
-            setResult(null);
-          }}
+          onBookAnother={() => navigate(location.pathname, { replace: true, state: null })}
         />
       </div>
     );
