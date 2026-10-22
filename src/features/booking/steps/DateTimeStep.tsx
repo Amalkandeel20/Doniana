@@ -67,7 +67,7 @@ export function DateTimeStep() {
       {days.length > 0 && (
         <>
           <div className="-mx-5 overflow-x-auto px-5 no-scrollbar sm:mx-0 sm:px-0">
-            <ul className="flex gap-2 pb-1" role="listbox" aria-label={t("booking.review.date")}>
+            <ul className="flex gap-2 pb-1" aria-label={t("booking.review.date")}>
               {days.map((d, i) => {
                 const { weekday, day, month } = formatLocalDateShort(d.date);
                 const active = d.date === state.date;
@@ -77,8 +77,7 @@ export function DateTimeStep() {
                   <li key={d.date}>
                     <button
                       type="button"
-                      role="option"
-                      aria-selected={active}
+                      aria-pressed={active}
                       aria-disabled={disabled}
                       disabled={disabled}
                       data-testid={`day-${d.date}`}
@@ -129,15 +128,14 @@ export function DateTimeStep() {
                   {t("booking.datetime.noSlots")}
                 </p>
               ) : (
-                <ul className="grid grid-cols-3 gap-2 sm:grid-cols-5" role="listbox" aria-labelledby="slots-title">
+                <ul className="grid grid-cols-3 gap-2 sm:grid-cols-5" aria-labelledby="slots-title">
                   {selectedDay.slots.map((s) => {
                     const active = state.slot?.startsAt === s.startsAt;
                     return (
                       <li key={s.startsAt}>
                         <button
                           type="button"
-                          role="option"
-                          aria-selected={active}
+                          aria-pressed={active}
                           data-testid={`slot-${s.time}`}
                           onClick={() => dispatch({ type: "setSlot", slot: s })}
                           className={cn(

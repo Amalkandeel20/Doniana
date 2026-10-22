@@ -17,11 +17,11 @@ export function ServiceStep({ services }: { services: Service[] }) {
   return (
     <div className="space-y-6">
       <h2 className="text-2xl font-semibold">{t("booking.service.title")}</h2>
-      <ul className="grid gap-4 sm:grid-cols-2" role="radiogroup" aria-label={t("booking.service.title")}>
+      <div className="grid gap-4 sm:grid-cols-2" role="radiogroup" aria-label={t("booking.service.title")}>
         {services.map((s) => {
           const isSelected = s.id === state.serviceId;
           return (
-            <li key={s.id}>
+            <div key={s.id}>
               <button
                 type="button"
                 role="radio"
@@ -68,10 +68,10 @@ export function ServiceStep({ services }: { services: Service[] }) {
                   </div>
                 </div>
               </button>
-            </li>
+            </div>
           );
         })}
-      </ul>
+      </div>
 
       {selected && selected.service_addons.length > 0 && (
         <fieldset className="rounded-3xl border bg-card p-5">

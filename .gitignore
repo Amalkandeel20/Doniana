@@ -13,3 +13,4 @@ supabase/.branches
 supabase/functions/.env
 *.local
 .DS_Store
+lighthouse-report

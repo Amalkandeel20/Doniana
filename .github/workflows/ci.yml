@@ -126,5 +126,5 @@ jobs:
           name: playwright-report
           path: |
             playwright-report
-            .lighthouseci
+            lighthouse-report
           retention-days: 7
