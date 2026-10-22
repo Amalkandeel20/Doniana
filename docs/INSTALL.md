@@ -2,7 +2,7 @@
 
 ## Prerequisites
 
-- Node.js ≥ 20.11 with npm, and Git
+- Node.js ≥ 22 with npm, and Git (Supabase's client needs the built-in WebSocket that Node 22 added)
 - Docker Desktop, only if you want the full local Supabase stack (`supabase start`). Everything
   except the browser end-to-end tests also works without Docker.
 
