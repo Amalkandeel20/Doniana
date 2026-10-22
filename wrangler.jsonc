@@ -1,0 +1,23 @@
+// Cloudflare Workers (static assets) hosting for the SPA. No server code runs here: all private
+// operations live in Supabase Edge Functions. See docs/DEPLOYMENT.md.
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "doniana-dev",
+  "compatibility_date": "2025-09-01",
+  "assets": {
+    "directory": "./dist",
+    "not_found_handling": "single-page-application"
+  },
+  "observability": { "enabled": true },
+  "env": {
+    "staging": {
+      "name": "doniana-staging"
+    },
+    "production": {
+      "name": "doniana",
+      // Replace with the client's domain once it is purchased and added to Cloudflare:
+      // "routes": [{ "pattern": "doniana.example", "custom_domain": true }, { "pattern": "www.doniana.example", "custom_domain": true }]
+      "routes": []
+    }
+  }
+}

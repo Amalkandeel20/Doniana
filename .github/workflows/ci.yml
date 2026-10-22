@@ -1,0 +1,129 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  quality:
+    name: Type-check, lint, unit & component tests, build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - run: npm run typecheck
+      - name: Type-check Edge Functions (Deno)
+        working-directory: supabase/functions
+        run: npx --yes deno@2.9.6 check --config deno.json */index.ts
+      - run: npm run lint
+      - run: npm run test:unit
+      - name: Production build
+        run: npm run build
+        env:
+          VITE_SUPABASE_URL: https://ci-placeholder.supabase.co
+          VITE_SUPABASE_ANON_KEY: ci-placeholder-anon-key
+      - name: No server secrets in the browser bundle
+        run: |
+          if grep -rEl "SUPABASE_SERVICE_ROLE_KEY|MANAGE_TOKEN_SECRET|TWILIO_AUTH_TOKEN|CRON_SECRET" dist; then
+            echo "Secret-looking identifiers found in dist/"; exit 1
+          fi
+
+  database:
+    name: Database integration & concurrency (PostgreSQL 15)
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_PASSWORD: postgres
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 5s --health-timeout 5s --health-retries 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - run: npm run test:db
+        env:
+          TEST_DATABASE_URL: postgres://postgres:postgres@localhost:5432/postgres
+      - name: Same suite on PGlite (what developers run locally)
+        run: npm run test:db
+
+  e2e:
+    name: End-to-end (real local Supabase stack)
+    runs-on: ubuntu-latest
+    needs: [quality, database]
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - uses: supabase/setup-cli@v1
+        with:
+          version: latest
+      - name: Start Supabase (migrations + dev seed)
+        run: supabase start -x studio,imgproxy,logflare,vector,realtime,supavisor
+      - name: Export local credentials
+        run: |
+          supabase status -o env > .supabase.env
+          set -a; . ./.supabase.env; set +a
+          {
+            echo "VITE_SUPABASE_URL=$API_URL"
+            echo "VITE_SUPABASE_ANON_KEY=$ANON_KEY"
+            echo "SUPABASE_URL=$API_URL"
+            echo "SUPABASE_SERVICE_ROLE_KEY=$SERVICE_ROLE_KEY"
+          } >> "$GITHUB_ENV"
+      - name: Serve Edge Functions
+        run: |
+          cat > supabase/functions/.env <<EOF
+          APP_ENV=test
+          SITE_URL=http://localhost:5173
+          ALLOWED_ORIGINS=http://localhost:5173
+          MANAGE_TOKEN_SECRET=$(openssl rand -base64 48)
+          RATE_LIMIT_SALT=$(openssl rand -base64 24)
+          CRON_SECRET=$(openssl rand -base64 48)
+          SMS_PROVIDER=dev
+          EOF
+          nohup supabase functions serve --env-file supabase/functions/.env > functions.log 2>&1 &
+          for i in $(seq 1 60); do
+            code=$(curl -s -o /dev/null -w '%{http_code}' -X OPTIONS "$SUPABASE_URL/functions/v1/availability" || true)
+            [ "$code" != "000" ] && [ "$code" != "502" ] && [ "$code" != "503" ] && break
+            sleep 2
+          done
+      - run: npx playwright install --with-deps chromium webkit
+      - run: npx playwright test
+      - name: Lighthouse (performance & accessibility budgets)
+        run: |
+          npm run build
+          npx vite preview --port 4173 --strictPort &
+          sleep 3
+          npx --yes @lhci/cli@0.14.x autorun --config=lighthouserc.json
+      - if: failure()
+        run: cat functions.log || true
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: playwright-report
+          path: |
+            playwright-report
+            .lighthouseci
+          retention-days: 7

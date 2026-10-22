@@ -1,0 +1,66 @@
+# Supabase CLI configuration for local development (`npx supabase start`).
+project_id = "doniana"
+
+[api]
+enabled = true
+port = 54321
+schemas = ["public", "graphql_public"]
+extra_search_path = ["public", "extensions"]
+max_rows = 1000
+
+[db]
+port = 54322
+major_version = 15
+
+[db.seed]
+enabled = true
+sql_paths = ["./seed.sql"]
+
+[studio]
+enabled = true
+port = 54323
+
+[inbucket]
+enabled = true
+port = 54324
+
+[storage]
+enabled = true
+file_size_limit = "10MiB"
+
+[auth]
+enabled = true
+site_url = "http://localhost:5173"
+additional_redirect_urls = ["http://localhost:5173"]
+jwt_expiry = 3600
+enable_refresh_token_rotation = true
+# Customers never sign up; administrator accounts are provisioned manually (docs/ADMIN-GUIDE.md).
+enable_signup = false
+
+[auth.email]
+enable_signup = false
+enable_confirmations = false
+
+[edge_runtime]
+enabled = true
+policy = "oneshot"
+
+# Public endpoints authenticate their own way (validation + rate limits, management token,
+# cron secret, Twilio signature, or an explicit admin check), so the gateway JWT check is off.
+[functions.availability]
+verify_jwt = false
+
+[functions.create-booking]
+verify_jwt = false
+
+[functions.manage-appointment]
+verify_jwt = false
+
+[functions.admin-create-appointment]
+verify_jwt = false
+
+[functions.process-notifications]
+verify_jwt = false
+
+[functions.sms-status]
+verify_jwt = false

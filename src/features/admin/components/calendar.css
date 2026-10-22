@@ -1,0 +1,153 @@
+/* FullCalendar theme for the admin calendar: black / ivory / champagne, rounded, phone-friendly. */
+.dn-calendar {
+  --fc-border-color: #ebe4d8;
+  --fc-page-bg-color: #ffffff;
+  --fc-neutral-bg-color: #f2ece3;
+  --fc-non-business-color: rgba(242, 236, 227, 0.65);
+  --fc-today-bg-color: rgba(201, 179, 138, 0.12);
+  --fc-now-indicator-color: #75603c;
+  --fc-list-event-hover-bg-color: #faf7f2;
+  --fc-button-text-color: #0a0a0a;
+  --fc-button-bg-color: #ffffff;
+  --fc-button-border-color: #e5ddd0;
+  --fc-button-hover-bg-color: #faf7f2;
+  --fc-button-hover-border-color: #c9b38a;
+  --fc-button-active-bg-color: #0a0a0a;
+  --fc-button-active-border-color: #0a0a0a;
+  --fc-event-border-color: transparent;
+  font-family: inherit;
+}
+
+.dn-calendar .fc {
+  background: #ffffff;
+  border-radius: 1.5rem;
+  padding: 0.75rem;
+  border: 1px solid #ebe4d8;
+}
+
+.dn-calendar .fc .fc-toolbar.fc-header-toolbar {
+  margin-bottom: 0.75rem;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.dn-calendar .fc .fc-toolbar-title {
+  font-size: 1.15rem;
+  font-weight: 600;
+}
+
+.dn-calendar .fc .fc-button {
+  min-height: 2.75rem;
+  min-width: 2.75rem;
+  border-radius: 9999px;
+  padding: 0.4rem 1rem;
+  font-weight: 500;
+  box-shadow: none;
+}
+
+.dn-calendar .fc .fc-button-group > .fc-button {
+  border-radius: 9999px;
+  margin-inline: 0.15rem;
+}
+
+.dn-calendar .fc .fc-button-primary:not(:disabled).fc-button-active,
+.dn-calendar .fc .fc-button-primary:not(:disabled):active {
+  color: #faf7f2;
+}
+
+.dn-calendar .fc .fc-button:focus-visible {
+  outline: 2px solid #c9b38a;
+  outline-offset: 2px;
+}
+
+.dn-calendar .fc .fc-button-primary:disabled {
+  background: #f2ece3;
+  border-color: #f2ece3;
+  color: #6b6358;
+  opacity: 1;
+}
+
+.dn-calendar .fc .fc-scrollgrid {
+  border-radius: 1rem;
+  overflow: hidden;
+}
+
+.dn-calendar .fc .fc-col-header-cell-cushion,
+.dn-calendar .fc .fc-daygrid-day-number {
+  color: #0a0a0a;
+  font-weight: 500;
+  padding: 0.5rem 0.25rem;
+}
+
+.dn-calendar .fc .fc-timegrid-slot {
+  height: 2.75rem;
+}
+
+.dn-calendar .fc .fc-timegrid-slot-label-cushion {
+  direction: ltr;
+  font-size: 0.8rem;
+  color: #6b6358;
+}
+
+.dn-calendar .fc .fc-timegrid-event,
+.dn-calendar .fc .fc-daygrid-block-event {
+  border-radius: 0.75rem;
+  cursor: pointer;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+}
+
+.dn-calendar .fc .fc-event:focus-visible {
+  outline: 2px solid #c9b38a;
+  outline-offset: 2px;
+}
+
+.dn-calendar .dn-ev-body {
+  padding: 0.2rem 0.4rem;
+  line-height: 1.3;
+  overflow: hidden;
+  font-size: 0.82rem;
+}
+
+.dn-calendar .dn-ev--cancelled {
+  opacity: 0.75;
+}
+
+.dn-calendar .dn-ev--cancelled .dn-ev-main {
+  text-decoration: line-through;
+}
+
+.dn-calendar .fc .fc-list {
+  border-radius: 1rem;
+}
+
+.dn-calendar .fc .fc-list-day-cushion {
+  background: #f2ece3;
+}
+
+.dn-calendar .fc .fc-list-event {
+  cursor: pointer;
+}
+
+.dn-calendar .fc .fc-list-event td {
+  padding-block: 0.85rem;
+}
+
+.dn-calendar .fc .fc-list-event-time {
+  direction: ltr;
+  text-align: end;
+}
+
+@media (max-width: 767px) {
+  .dn-calendar .fc {
+    padding: 0.5rem;
+    border-radius: 1.25rem;
+  }
+
+  .dn-calendar .fc .fc-toolbar-title {
+    font-size: 1rem;
+  }
+
+  .dn-calendar .fc .fc-button {
+    padding: 0.35rem 0.8rem;
+  }
+}
