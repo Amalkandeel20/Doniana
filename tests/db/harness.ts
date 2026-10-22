@@ -41,6 +41,10 @@ export async function createTestDb(): Promise<Db> {
     const testUrl = new URL(url);
     testUrl.pathname = `/${dbName}`;
     const pool = new pg.default.Pool({ connectionString: testUrl.toString(), max: 20 });
+    // Idle clients are terminated (57P01) when the test database is dropped at teardown.
+    pool.on("error", (e: Error & { code?: string }) => {
+      if (e.code !== "57P01") throw e;
+    });
     const wrap = (runner: { query: (s: string, p?: unknown[]) => Promise<{ rows: unknown[] }> }): Db => ({
       kind: "postgres",
       query: async <T,>(sql: string, params?: unknown[]) => (await runner.query(sql, params)).rows as T[],
@@ -51,6 +55,7 @@ export async function createTestDb(): Promise<Db> {
       ...wrap(pool),
       connections: async (n) => {
         const clients = await Promise.all(Array.from({ length: n }, () => pool.connect()));
+        for (const c of clients) c.on("error", () => {});
         return clients.map((c) => ({ ...wrap(c), close: async () => c.release() }));
       },
       close: async () => {
