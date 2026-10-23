@@ -8,7 +8,7 @@ export const customerNameSchema = z
   .trim()
   .min(2, "validation.name_short")
   .max(80, "validation.name_long")
-  .refine((v) => /^[\p{L}\p{M}][\p{L}\p{M}\s'’.-]*$/u.test(v), "validation.name_invalid")
+  .refine((v) => /^[\p{L}\p{M}][\p{L}\p{M}\s'\u2019.-]*$/u.test(v), "validation.name_invalid")
   .refine((v) => (v.match(/\p{L}/gu) ?? []).length >= 2, "validation.name_short");
 
 export const customerPhoneSchema = z

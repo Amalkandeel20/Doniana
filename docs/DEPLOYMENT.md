@@ -39,6 +39,16 @@ Local development never touches either one. `seed.sql` is applied only by `supab
      TURNSTILE_SECRET_KEY=…                        # optional anti-bot
    ```
    `SUPABASE_URL`, `SUPABASE_ANON_KEY` and `SUPABASE_SERVICE_ROLE_KEY` are injected automatically.
+
+   **Alternative without the CLI: Vault.** Any setting missing from the function environment is
+   read from a Vault secret named `doniana_<setting in lower case>` (for example
+   `doniana_manage_token_secret`, `doniana_site_url`, `doniana_allowed_origins`,
+   `doniana_sms_provider`, `doniana_app_env`, `doniana_rate_limit_salt`), and `CRON_SECRET` from
+   `cron_secret`. Random values can be generated inside the database so they never leave it:
+   ```sql
+   select vault.create_secret(encode(extensions.gen_random_bytes(48), 'base64'), 'doniana_manage_token_secret');
+   ```
+   Staging is configured this way. Environment secrets take precedence when both exist.
    **Never rotate `MANAGE_TOKEN_SECRET` casually.** Doing so invalidates every existing management link.
 6. Deploy functions with `supabase functions deploy --project-ref <ref>`. `verify_jwt` is configured per function in `supabase/config.toml`.
 7. Create the owner's account:

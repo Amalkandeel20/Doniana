@@ -3,8 +3,6 @@ import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 import type { Deps } from "../handlers.ts";
 import type { Env } from "../http.ts";
 
-export const env: Env = { get: (name) => Deno.env.get(name) };
-
 function required(name: string): string {
   const value = Deno.env.get(name);
   if (!value) throw new Error(`Missing environment variable ${name}`);
@@ -17,6 +15,26 @@ export function serviceClient(): SupabaseClient {
     auth: { persistSession: false, autoRefreshToken: false },
   });
 }
+
+// Settings missing from the environment fall back to Vault (see the function_config migration).
+// Loaded once per function instance.
+async function loadVaultConfig(): Promise<Record<string, string>> {
+  try {
+    const { data, error } = await serviceClient().rpc("get_function_config");
+    if (error) {
+      console.error("vault_config_unavailable", error.message);
+      return {};
+    }
+    return (data ?? {}) as Record<string, string>;
+  } catch (e) {
+    console.error("vault_config_unavailable", (e as Error).message);
+    return {};
+  }
+}
+
+const vaultConfig = await loadVaultConfig();
+
+export const env: Env = { get: (name) => Deno.env.get(name) || vaultConfig[name] };
 
 export function userClient(jwt: string): SupabaseClient {
   return createClient(required("SUPABASE_URL"), required("SUPABASE_ANON_KEY"), {
