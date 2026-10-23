@@ -1,8 +1,11 @@
 import { Link } from "react-router-dom";
-import { CalendarCheck, Copy } from "lucide-react";
+import { CalendarCheck, CalendarPlus, Copy } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
+import { fetchBusinessInfo } from "@/features/services/publicData";
+import { useAsync } from "@/hooks/useAsync";
 import { t } from "@/i18n";
+import { downloadIcs, googleCalendarUrl, type CalendarEvent } from "@/lib/calendar";
 import { formatDateAr, formatDurationAr, formatShekels, formatTime } from "@/lib/format";
 import type { BookingResponse } from "@/types/models";
 
@@ -14,6 +17,17 @@ export function SuccessView({ result, onBookAnother }: { result: BookingResponse
   const a = result.appointment;
   const start = new Date(a.startsAt);
   const link = manageUrl(result.manageToken);
+  const info = useAsync(() => fetchBusinessInfo(), []);
+  const settings = info.data?.settings;
+  const service = a.locationNameAr ? `${a.serviceNameAr} (${a.locationNameAr})` : a.serviceNameAr;
+  const calendarEvent: CalendarEvent = {
+    uid: `${a.reference}@doniana`,
+    title: `${settings?.business_name ?? "DONIANA"} — ${service}`,
+    description: `${service}\n${t("booking.success.calendarNote")}: ${a.reference}`,
+    location: settings?.address_ar ?? undefined,
+    start,
+    end: new Date(a.endsAt),
+  };
 
   return (
     <div className="mx-auto max-w-lg animate-fade-up text-center" data-testid="booking-success">
@@ -32,11 +46,27 @@ export function SuccessView({ result, onBookAnother }: { result: BookingResponse
         <Row label={t("booking.review.total")} value={formatShekels(a.totalPriceAgorot)} />
       </dl>
 
+      <div className="mt-4 flex flex-col gap-2 sm:flex-row">
+        <Button
+          variant="outline"
+          className="sm:flex-1"
+          onClick={() => downloadIcs(calendarEvent, `doniana-${a.reference}.ics`)}
+          data-testid="add-to-calendar"
+        >
+          <CalendarPlus aria-hidden /> {t("booking.success.addToCalendar")}
+        </Button>
+        <Button variant="ghost" asChild className="sm:flex-1">
+          <a href={googleCalendarUrl(calendarEvent)} target="_blank" rel="noopener noreferrer" lang="en">
+            {t("booking.success.googleCalendar")}
+          </a>
+        </Button>
+      </div>
+
       <div className="mt-6 rounded-3xl bg-cream p-5 text-start">
         <p className="font-semibold">{t("booking.success.manage")}</p>
         <p className="mt-1 text-sm text-muted-foreground">{t("booking.success.manageHint")}</p>
         <div className="mt-4 flex flex-col gap-2 sm:flex-row">
-          <Button asChild className="flex-1">
+          <Button asChild className="sm:flex-1">
             <a href={link} data-testid="manage-link">
               {t("booking.success.manage")}
             </a>

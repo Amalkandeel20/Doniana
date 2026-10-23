@@ -8,8 +8,17 @@ test.beforeEach(async () => {
   await cancelAllFutureAppointments();
 });
 
+/** Shows the month containing `date` in the booking calendar and returns that day button. */
+async function dayButton(page: Page, date: string) {
+  await expect(page.getByTestId("month-next")).toBeVisible();
+  for (let i = 0; i < 3 && (await page.getByTestId(`day-${date}`).count()) === 0; i++) {
+    await page.getByTestId("month-next").click();
+  }
+  return page.getByTestId(`day-${date}`);
+}
+
 async function pickDate(page: Page, date: string) {
-  await page.getByTestId(`day-${date}`).click();
+  await (await dayButton(page, date)).click();
 }
 
 async function fillDetails(page: Page, name = "دنيا اختبار", phone = PHONE) {
@@ -59,6 +68,11 @@ test("brows: book, manage, cancel and the time becomes available again @mobile",
   await page.getByTestId("confirm-booking").dblclick();
   await expect(page.getByTestId("booking-success")).toBeVisible();
   await expect(page.getByTestId("booking-reference")).toHaveText(/^DN-/);
+
+  // Add to calendar downloads an .ics file for this booking
+  const download = page.waitForEvent("download");
+  await page.getByTestId("add-to-calendar").click();
+  expect((await download).suggestedFilename()).toMatch(/^doniana-DN-[A-Z2-9]{6}\.ics$/);
 
   // 8. Private management link
   await page.getByTestId("manage-link").click();
@@ -122,7 +136,7 @@ test("tomorrow is bookable (no 24-hour minimum)", async ({ page }) => {
   await page.goto("/book/brows");
   await page.getByTestId("service-eyebrow-shaping").click();
   await page.getByTestId("step-next").click();
-  await expect(page.getByTestId(`day-${localDate(1)}`)).toBeEnabled();
+  await expect(await dayButton(page, localDate(1))).toBeEnabled();
   await pickDate(page, localDate(1));
   await expect(page.getByTestId("slot-08:00")).toBeVisible();
 });
@@ -134,7 +148,7 @@ test("fully booked day shows no times", async ({ page }) => {
   await page.goto("/book/brows");
   await page.getByTestId("service-eyebrow-shaping").click();
   await page.getByTestId("step-next").click();
-  await expect(page.getByTestId(`day-${date}`)).toBeDisabled();
+  await expect(await dayButton(page, date)).toBeDisabled();
 });
 
 test("invalid phone numbers are rejected with an Arabic message", async ({ page }) => {
