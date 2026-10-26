@@ -88,7 +88,7 @@ export function DateTimeStep() {
 
   return (
     <div className="space-y-6">
-      <h2 className="text-2xl font-semibold">{t("booking.datetime.title")}</h2>
+      <h2 className="font-heading text-3xl">{t("booking.datetime.title")}</h2>
 
       {availability.error !== undefined && (
         <div role="alert" className="rounded-3xl border border-destructive/30 bg-destructive/5 p-5">
@@ -160,10 +160,10 @@ export function DateTimeStep() {
                       onClick={() => dispatch({ type: "setDate", date })}
                       className={cn(
                         "mx-auto grid aspect-square w-full max-w-11 place-items-center rounded-full text-sm tabular-nums transition-colors",
-                        active && "bg-ink font-semibold text-ivory",
+                        active && "bg-primary font-semibold text-primary-foreground",
                         !active && bookable && "font-medium hover:bg-secondary",
                         !bookable && "cursor-not-allowed text-muted-foreground/45",
-                        isToday && !active && "ring-1 ring-champagne",
+                        isToday && !active && "ring-1 ring-rose-deep",
                       )}
                     >
                       {Number(date.slice(8))}
@@ -206,7 +206,7 @@ export function DateTimeStep() {
                       onClick={() => dispatch({ type: "setSlot", slot: s })}
                       className={cn(
                         "ltr h-11 w-full rounded-2xl border text-base font-medium tabular-nums transition-colors",
-                        active ? "border-ink bg-ink text-ivory" : "bg-white hover:border-ink/40 hover:bg-secondary",
+                        active ? "border-primary bg-primary text-primary-foreground" : "bg-white hover:border-primary/40 hover:bg-secondary",
                       )}
                     >
                       {s.time}

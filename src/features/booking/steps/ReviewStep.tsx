@@ -93,7 +93,7 @@ export function ReviewStep({ service, onBooked }: { service: Service; onBooked: 
 
   return (
     <div className="space-y-6">
-      <h2 className="text-2xl font-semibold">{t("booking.review.title")}</h2>
+      <h2 className="font-heading text-3xl">{t("booking.review.title")}</h2>
       <dl className="divide-y overflow-hidden rounded-3xl border bg-card" data-testid="review-summary">
         {rows.map((r) => (
           <div key={r.label} className="flex items-start justify-between gap-4 px-5 py-3.5">
@@ -111,9 +111,9 @@ export function ReviewStep({ service, onBooked }: { service: Service; onBooked: 
             </dd>
           </div>
         ))}
-        <div className="flex items-center justify-between bg-ink px-5 py-4 text-ivory">
+        <div className="flex items-center justify-between bg-primary px-5 py-4 text-primary-foreground">
           <dt className="font-medium">{t("booking.review.total")}</dt>
-          <dd className="text-2xl font-semibold" data-testid="review-total">
+          <dd className="font-heading text-3xl" data-testid="review-total">
             {formatShekels(q.totalPriceAgorot)}
           </dd>
         </div>
@@ -144,7 +144,7 @@ export function ReviewStep({ service, onBooked }: { service: Service; onBooked: 
         disabled={submitting || (!!config.turnstileSiteKey && !challenge)}
         data-testid="confirm-booking"
       >
-        {submitting ? <Spinner className="text-ivory" label={t("booking.review.confirming")} /> : t("booking.review.confirm")}
+        {submitting ? <Spinner className="text-primary-foreground" label={t("booking.review.confirming")} /> : t("booking.review.confirm")}
       </Button>
     </div>
   );

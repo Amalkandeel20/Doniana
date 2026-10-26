@@ -16,7 +16,7 @@ export function ServiceStep({ services }: { services: Service[] }) {
 
   return (
     <div className="space-y-6">
-      <h2 className="text-2xl font-semibold">{t("booking.service.title")}</h2>
+      <h2 className="font-heading text-3xl">{t("booking.service.title")}</h2>
       <div className="grid gap-4 sm:grid-cols-2" role="radiogroup" aria-label={t("booking.service.title")}>
         {services.map((s) => {
           const isSelected = s.id === state.serviceId;
@@ -30,7 +30,7 @@ export function ServiceStep({ services }: { services: Service[] }) {
                 onClick={() => dispatch({ type: "selectService", serviceId: s.id })}
                 className={cn(
                   "group flex h-full w-full flex-col overflow-hidden rounded-3xl border bg-card text-start transition-all hover:shadow-md",
-                  isSelected ? "border-ink ring-2 ring-ink" : "border-border",
+                  isSelected ? "border-primary bg-rose-light ring-2 ring-primary" : "border-border",
                 )}
               >
                 <img
@@ -59,7 +59,7 @@ export function ServiceStep({ services }: { services: Service[] }) {
                     <span
                       className={cn(
                         "inline-flex h-10 items-center gap-1.5 rounded-full px-4 text-sm font-medium",
-                        isSelected ? "bg-ink text-ivory" : "bg-secondary",
+                        isSelected ? "bg-primary text-primary-foreground" : "bg-secondary",
                       )}
                     >
                       {isSelected && <Check className="size-4" aria-hidden />}
@@ -120,7 +120,7 @@ export function ServiceStep({ services }: { services: Service[] }) {
                   onClick={() => dispatch({ type: "setLocation", locationId: l.id })}
                   className={cn(
                     "h-12 min-w-24 rounded-full border px-5 font-medium transition-colors",
-                    active ? "border-ink bg-ink text-ivory" : "bg-white hover:bg-secondary",
+                    active ? "border-primary bg-primary text-primary-foreground" : "bg-white hover:bg-secondary",
                   )}
                 >
                   {l.name_ar}

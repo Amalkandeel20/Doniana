@@ -80,7 +80,7 @@ export default function ManageAppointmentPage() {
 
   return (
     <section className="container max-w-xl py-10 sm:py-16">
-      <h1 className="text-center text-3xl font-semibold">{t("manage.title")}</h1>
+      <h1 className="text-center font-heading text-4xl">{t("manage.title")}</h1>
 
       {view.loading && !current && <Spinner label={t("manage.loading")} className="mt-10 flex justify-center" />}
 

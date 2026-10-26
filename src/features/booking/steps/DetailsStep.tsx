@@ -31,7 +31,7 @@ export function DetailsStep({ onDone }: { onDone: () => void }) {
   return (
     <form id={DETAILS_FORM_ID} noValidate onSubmit={onSubmit} className="space-y-6">
       <div>
-        <h2 className="text-2xl font-semibold">{t("booking.details.title")}</h2>
+        <h2 className="font-heading text-3xl">{t("booking.details.title")}</h2>
         <p className="mt-1 text-muted-foreground">{t("booking.details.text")}</p>
       </div>
       <div className="space-y-2">

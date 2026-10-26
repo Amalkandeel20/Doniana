@@ -6,7 +6,7 @@ export default function BookCategoryPage() {
     <section className="container max-w-3xl py-10 sm:py-16">
       <div className="text-center">
         <p className="eyebrow-label">Book Now</p>
-        <h1 className="mt-2 text-3xl font-semibold sm:text-4xl">{t("categories.chooseTitle")}</h1>
+        <h1 className="mt-2 font-heading text-4xl sm:text-5xl">{t("categories.chooseTitle")}</h1>
         <p className="mt-2 text-muted-foreground">{t("categories.chooseText")}</p>
       </div>
       <div className="mt-8 grid gap-5 sm:grid-cols-2">

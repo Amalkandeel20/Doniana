@@ -26,3 +26,5 @@ Still needed from the client. Each item is configurable and none needs code chan
 | 15 | Logo usage on light backgrounds | Logo shown only on black, unaltered. Any variant needs the client's approval | `src/components/layout/Logo.tsx` |
 | 16 | Late reminders: if the worker is down at T−24h, until when may it still send? | 60 minutes late at most, then `skipped` | `/admin/settings` |
 | 17 | Does a piercing location change price or duration? | No (deltas = 0) | `/admin/services` → locations |
+| 18 | Visual direction | **Changed 2026-10-26** from black & white to cream / sage green / dusty rose with Aref Ruqaa headings and the poster copy («وصلتِ للمكان الصح.»), per the client's reference images. Logo shown black (inverted file) on light surfaces | `src/styles/globals.css`, `tailwind.config.ts` |
+| 19 | Hero feature claims «نتائج طبيعية · تعقيم ومعايير عالية · رعاية شخصية» | Taken from the reference mock-up; the owner should confirm they are accurate | `src/i18n/ar.ts` → `home.features` |

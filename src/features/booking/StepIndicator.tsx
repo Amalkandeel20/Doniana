@@ -28,8 +28,8 @@ export function StepIndicator({ current, maxReachable, onSelect }: { current: St
                 <span
                   className={cn(
                     "grid size-9 place-items-center rounded-full border text-sm font-semibold transition-colors",
-                    active && "border-ink bg-ink text-ivory",
-                    done && "border-champagne bg-champagne text-ink",
+                    active && "border-rose-deep bg-rose text-ink",
+                    done && "border-primary bg-primary text-primary-foreground",
                     !active && !done && "border-input bg-white text-muted-foreground",
                   )}
                 >
@@ -38,7 +38,7 @@ export function StepIndicator({ current, maxReachable, onSelect }: { current: St
                 <span className={cn("text-xs sm:text-sm", active ? "font-semibold text-foreground" : "text-muted-foreground")}>{label}</span>
               </button>
               {i < labels.length - 1 && (
-                <span aria-hidden className={cn("mb-5 h-px flex-1 sm:mb-0", done ? "bg-champagne" : "bg-border")} />
+                <span aria-hidden className={cn("mb-5 h-px flex-1 sm:mb-0", done ? "bg-primary" : "bg-border")} />
               )}
             </li>
           );

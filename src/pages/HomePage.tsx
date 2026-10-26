@@ -1,11 +1,11 @@
 import { Link } from "react-router-dom";
-import { AtSign, Clock, MapPin, MessageCircle, Phone } from "lucide-react";
-import { Logo } from "@/components/layout/Logo";
+import { ArrowLeft, AtSign, CalendarDays, Clock, Gem, Heart, Leaf, MapPin, MessageCircle, Phone } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { CategoryCard } from "@/features/services/CategoryCard";
 import { fetchBusinessInfo, fetchCatalog, fetchPortfolio } from "@/features/services/publicData";
 import { useAsync } from "@/hooks/useAsync";
-import { t } from "@/i18n";
+import { messages, t } from "@/i18n";
+import { cn } from "@/lib/utils";
 import { ARABIC_WEEKDAYS, formatDurationAr, formatPhoneForDisplay, formatShekels, whatsappLink } from "@/lib/format";
 import { placeholders } from "@/lib/placeholders";
 import { publicImageUrl } from "@/lib/supabase";
@@ -29,54 +29,103 @@ export default function HomePage() {
 
   return (
     <>
-      {/* Hero */}
-      <section className="relative overflow-hidden bg-white text-ink">
-        <div className="container grid items-center gap-10 pb-14 pt-8 md:grid-cols-2 md:gap-14 md:pb-24 md:pt-14">
-          <div className="flex flex-col items-center text-center md:items-start md:text-start">
-            <Logo tone="dark" className="h-44 sm:h-56" priority />
-            <h1 className="mt-6 text-balance text-4xl font-light leading-tight sm:text-5xl">{t("home.heroTitle")}</h1>
-            <p className="mt-4 max-w-md text-balance text-base leading-relaxed text-muted-foreground sm:text-lg">{t("home.heroText")}</p>
-            <div className="mt-8 flex w-full flex-col items-center gap-3 sm:w-auto sm:flex-row">
-              <Button asChild size="lg" className="w-full sm:w-auto" data-testid="hero-book">
+      {/* Hero: copy and type from the client's poster, layout and colours from the web mock-up */}
+      <section className="relative isolate overflow-hidden bg-cream">
+        {/* Phones: photo on top fading into the text. Desktop: photo on the end side behind a soft fade. */}
+        <div className="relative h-72 sm:h-96 md:absolute md:inset-y-0 md:end-0 md:-z-10 md:h-full md:w-[62%]">
+          <img
+            src={placeholders.hero}
+            alt={t("home.placeholderNotice")}
+            width={1600}
+            height={1000}
+            {...{ fetchpriority: "high" }}
+            className="h-full w-full object-cover"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-cream via-cream/10 to-transparent md:hidden" />
+        </div>
+        <div className="absolute inset-0 -z-10 hidden bg-gradient-to-l from-cream from-35% via-cream/80 to-transparent md:block" />
+        <div className="container relative -mt-4 flex flex-col pb-10 md:mt-0 md:min-h-[38rem] md:justify-center md:py-20">
+          <div className="max-w-xl text-center md:text-start">
+            <p className="font-display text-xs uppercase tracking-brand text-ink/60" lang="en">
+              {t("home.heroEyebrow")}
+            </p>
+            <h1 className="mt-4 text-balance font-heading text-5xl leading-[1.35] text-ink sm:text-6xl">{t("home.heroTitle")}</h1>
+            <div className="my-5 flex items-center justify-center gap-3 text-champagne-deep md:justify-start" aria-hidden>
+              <span className="h-px w-16 bg-gradient-to-l from-champagne to-transparent" />
+              <span className="text-sm">✦</span>
+              <span className="h-px w-16 bg-gradient-to-r from-champagne to-transparent" />
+            </div>
+            <p className="mx-auto max-w-md text-balance text-lg leading-relaxed text-ink/75 md:mx-0">{t("home.heroText")}</p>
+            <div className="mt-8 flex flex-col items-center gap-3 sm:flex-row md:items-start">
+              <Button asChild size="lg" className="w-full px-7 shadow-md sm:w-auto" data-testid="hero-book">
                 <Link to="/book">
+                  <CalendarDays aria-hidden />
                   {t("home.bookNow")}
-                  <span className="font-display text-sm tracking-wider opacity-70">· {t("home.bookNowEn")}</span>
+                  <ArrowLeft aria-hidden />
                 </Link>
               </Button>
               {settings?.whatsapp_phone && (
-                <Button asChild variant="outline" size="lg" className="w-full sm:w-auto">
+                <Button asChild variant="outline" size="lg" className="w-full border-ink/20 bg-cream/60 sm:w-auto">
                   <a href={whatsappLink(settings.whatsapp_phone)} target="_blank" rel="noopener noreferrer">
                     <MessageCircle aria-hidden /> {t("home.whatsapp")}
                   </a>
                 </Button>
               )}
             </div>
+            <p className="mt-4 font-display text-[0.7rem] uppercase tracking-[0.3em] text-ink/50" lang="en">
+              {t("brand.tagline")}
+            </p>
+            <ul className="mt-8 grid grid-cols-3 gap-2 text-center text-sm text-ink/80 md:max-w-md">
+              {[
+                { icon: Leaf, label: t("home.features.natural") },
+                { icon: Gem, label: t("home.features.hygiene") },
+                { icon: Heart, label: t("home.features.care") },
+              ].map(({ icon: Icon, label }) => (
+                <li key={label} className="flex flex-col items-center gap-1.5">
+                  <Icon className="size-6 text-sage" strokeWidth={1.4} aria-hidden />
+                  {label}
+                </li>
+              ))}
+            </ul>
           </div>
-          <figure className="relative mx-auto w-full max-w-md md:max-w-none">
-            <img
-              src={placeholders.hero}
-              alt={t("home.placeholderNotice")}
-              width={1200}
-              height={1500}
-              {...{ fetchpriority: "high" }}
-              className="aspect-[4/5] w-full rounded-[2rem] object-cover ring-1 ring-black/5"
-            />
-            <div className="pointer-events-none absolute -bottom-3 -start-3 h-24 w-24 rounded-full border border-champagne/40" />
-          </figure>
         </div>
       </section>
 
       {/* Categories */}
-      <section id="services" className="scroll-mt-20 py-16 sm:py-24">
+      <section id="services" className="scroll-mt-24 py-12 sm:py-16">
         <div className="container">
-          <div className="mx-auto max-w-xl text-center">
-            <p className="eyebrow-label">Services</p>
-            <h2 className="mt-2 text-3xl font-semibold sm:text-4xl">{t("home.servicesTitle")}</h2>
-            <p className="mt-3 text-muted-foreground">{t("home.servicesText")}</p>
-          </div>
-          <div className="mt-10 grid gap-5 sm:grid-cols-2">
+          <div className="grid gap-4 sm:grid-cols-2">
             <CategoryCard category="brows" to="/book/brows" fromPriceAgorot={minPrice(catalog.data, "brows")} />
             <CategoryCard category="piercing" to="/book/piercing" fromPriceAgorot={minPrice(catalog.data, "piercing")} />
+          </div>
+
+          {/* Booking in four steps */}
+          <div className="mt-14 text-center">
+            <h2 className="font-heading text-4xl text-ink">{t("home.easyTitle")}</h2>
+            <p className="mt-1 text-muted-foreground">{t("home.easyText")}</p>
+            <ol className="mx-auto mt-6 flex max-w-xl items-start">
+              {messages.booking.steps.map((label, i) => (
+                <li key={label} className="flex flex-1 items-start">
+                  <span className="flex flex-1 flex-col items-center gap-2">
+                    <span
+                      className={cn(
+                        "grid size-10 place-items-center rounded-full border text-sm font-semibold",
+                        i === 0 ? "border-rose-deep/40 bg-rose text-ink" : "border-ink/20 bg-card text-ink/70",
+                      )}
+                    >
+                      {i + 1}
+                    </span>
+                    <span className="text-sm text-ink/80">{label}</span>
+                  </span>
+                  {i < messages.booking.steps.length - 1 && <span aria-hidden className="mt-5 h-px flex-1 bg-ink/15" />}
+                </li>
+              ))}
+            </ol>
+          </div>
+
+          <div className="mx-auto mt-14 max-w-xl text-center">
+            <h2 className="font-heading text-4xl text-ink">{t("home.servicesTitle")}</h2>
+            <p className="mt-2 text-muted-foreground">{t("home.servicesText")}</p>
           </div>
 
           {catalog.data && catalog.data.length > 0 && (
@@ -110,11 +159,11 @@ export default function HomePage() {
       </section>
 
       {/* Gallery */}
-      <section id="gallery" className="scroll-mt-20 bg-cream/60 py-16 sm:py-24">
+      <section id="gallery" className="scroll-mt-20 bg-rose-light/60 py-16 sm:py-24">
         <div className="container">
           <div className="mx-auto max-w-xl text-center">
             <p className="eyebrow-label">Portfolio</p>
-            <h2 className="mt-2 text-3xl font-semibold sm:text-4xl">{t("home.galleryTitle")}</h2>
+            <h2 className="mt-2 font-heading text-4xl">{t("home.galleryTitle")}</h2>
           </div>
           <ul className="mt-10 grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3">
             {gallery.map((img, i) => (
@@ -131,7 +180,7 @@ export default function HomePage() {
         <div className="container grid gap-10 md:grid-cols-2">
           <div>
             <p className="eyebrow-label">Contact</p>
-            <h2 className="mt-2 text-3xl font-semibold">{t("home.contactTitle")}</h2>
+            <h2 className="mt-2 font-heading text-4xl">{t("home.contactTitle")}</h2>
             <ul className="mt-6 space-y-3">
               {settings?.whatsapp_phone && (
                 <ContactRow icon={<MessageCircle />} href={whatsappLink(settings.whatsapp_phone)} label={t("home.whatsapp")} value={formatPhoneForDisplay(settings.whatsapp_phone)} />
@@ -172,11 +221,11 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="bg-black py-14 text-center text-ivory">
+      <section className="bg-sage py-14 text-center text-cream">
         <div className="container flex flex-col items-center gap-5">
           <div className="hairline" />
-          <p className="text-2xl font-light sm:text-3xl">{t("home.heroTitle")}</p>
-          <Button asChild variant="champagne" size="lg">
+          <p className="font-heading text-4xl sm:text-5xl">{t("home.heroTitle")}</p>
+          <Button asChild size="lg" className="bg-cream text-sage hover:bg-cream/90">
             <Link to="/book">{t("home.bookNow")}</Link>
           </Button>
         </div>

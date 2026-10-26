@@ -31,10 +31,10 @@ export function SuccessView({ result, onBookAnother }: { result: BookingResponse
 
   return (
     <div className="mx-auto max-w-lg animate-fade-up text-center" data-testid="booking-success">
-      <span className="mx-auto grid size-20 place-items-center rounded-full bg-ink text-champagne">
+      <span className="mx-auto grid size-20 place-items-center rounded-full bg-primary text-primary-foreground">
         <CalendarCheck className="size-9" aria-hidden />
       </span>
-      <h2 className="mt-6 text-3xl font-semibold">{t("booking.success.title")}</h2>
+      <h2 className="mt-6 font-heading text-4xl">{t("booking.success.title")}</h2>
       <p className="mt-2 text-muted-foreground">{t("booking.success.text")}</p>
 
       <dl className="mt-8 divide-y rounded-3xl border bg-card text-start">
