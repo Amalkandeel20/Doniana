@@ -56,3 +56,8 @@ export async function fetchPortfolio(): Promise<PortfolioImage[]> {
   if (error) throw error;
   return data as PortfolioImage[];
 }
+
+/** Drops the cached business info so the next read sees admin changes. */
+export function invalidateBusinessInfo() {
+  infoPromise = null;
+}

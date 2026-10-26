@@ -65,6 +65,9 @@ export interface BusinessSettings {
   buffer_minutes: number;
   min_notice_minutes: number;
   booking_horizon_days: number;
+  hero_image_path: string | null;
+  brows_card_image_path: string | null;
+  piercing_card_image_path: string | null;
 }
 
 export interface PortfolioImage {

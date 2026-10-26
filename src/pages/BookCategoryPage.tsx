@@ -1,7 +1,11 @@
 import { CategoryCard } from "@/features/services/CategoryCard";
+import { fetchBusinessInfo } from "@/features/services/publicData";
+import { useAsync } from "@/hooks/useAsync";
 import { t } from "@/i18n";
+import { publicImageUrl } from "@/lib/supabase";
 
 export default function BookCategoryPage() {
+  const settings = useAsync(() => fetchBusinessInfo(), []).data?.settings;
   return (
     <section className="container max-w-3xl py-10 sm:py-16">
       <div className="text-center">
@@ -10,8 +14,8 @@ export default function BookCategoryPage() {
         <p className="mt-2 text-muted-foreground">{t("categories.chooseText")}</p>
       </div>
       <div className="mt-8 grid gap-5 sm:grid-cols-2">
-        <CategoryCard category="brows" to="/book/brows" />
-        <CategoryCard category="piercing" to="/book/piercing" />
+        <CategoryCard category="brows" to="/book/brows" imageUrl={publicImageUrl("portfolio", settings?.brows_card_image_path)} />
+        <CategoryCard category="piercing" to="/book/piercing" imageUrl={publicImageUrl("portfolio", settings?.piercing_card_image_path)} />
       </div>
     </section>
   );

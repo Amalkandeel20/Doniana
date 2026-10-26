@@ -24,6 +24,9 @@ export default function HomePage() {
   const settings = info.data?.settings;
   const hours = info.data?.hours ?? [];
   const hasHours = hours.some((h) => h.is_open);
+  // Wait for settings before showing the placeholder so an uploaded photo never flashes in late.
+  const heroPhoto = publicImageUrl("portfolio", settings?.hero_image_path);
+  const heroSrc = info.loading && !info.data ? null : (heroPhoto ?? placeholders.hero);
   const gallery = portfolio.data?.length
     ? portfolio.data.map((p) => ({ src: publicImageUrl("portfolio", p.storage_path)!, alt: p.alt_ar, placeholder: false }))
     : placeholders.portfolio.map((src) => ({ src, alt: t("home.placeholderNotice"), placeholder: true }));
@@ -34,14 +37,16 @@ export default function HomePage() {
       <section className="relative isolate overflow-hidden bg-cream">
         {/* Phones: photo on top fading into the text. Desktop: photo on the end side behind a soft fade. */}
         <div className="relative h-72 sm:h-96 md:absolute md:inset-y-0 md:end-0 md:-z-10 md:h-full md:w-[62%]">
-          <img
-            src={placeholders.hero}
-            alt={t("home.placeholderNotice")}
-            width={1600}
-            height={1000}
-            {...{ fetchpriority: "high" }}
-            className="h-full w-full object-cover"
-          />
+          {heroSrc && (
+            <img
+              src={heroSrc}
+              alt={heroPhoto ? "" : t("home.placeholderNotice")}
+              width={1600}
+              height={1000}
+              {...{ fetchpriority: "high" }}
+              className="h-full w-full object-cover"
+            />
+          )}
           <div className="absolute inset-0 bg-gradient-to-t from-cream via-cream/10 to-transparent md:hidden" />
         </div>
         <div className="absolute inset-0 -z-10 hidden bg-gradient-to-l from-cream from-35% via-cream/80 to-transparent md:block" />
@@ -97,8 +102,16 @@ export default function HomePage() {
       <section id="services" className="scroll-mt-24 py-12 sm:py-16">
         <div className="container">
           <div className="grid gap-4 sm:grid-cols-2">
-            <CategoryCard category="brows" to="/book/brows" fromPriceAgorot={minPrice(catalog.data, "brows")} />
-            <CategoryCard category="piercing" to="/book/piercing" fromPriceAgorot={minPrice(catalog.data, "piercing")} />
+            <CategoryCard
+              category="brows"
+              to="/book/brows" fromPriceAgorot={minPrice(catalog.data, "brows")}
+              imageUrl={publicImageUrl("portfolio", settings?.brows_card_image_path)}
+            />
+            <CategoryCard
+              category="piercing"
+              to="/book/piercing" fromPriceAgorot={minPrice(catalog.data, "piercing")}
+              imageUrl={publicImageUrl("portfolio", settings?.piercing_card_image_path)}
+            />
           </div>
 
           {/* Booking in four steps */}
