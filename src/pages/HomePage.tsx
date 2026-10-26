@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { ArrowLeft, AtSign, CalendarDays, Clock, Gem, Heart, Leaf, MapPin, MessageCircle, Phone } from "lucide-react";
+import { Logo } from "@/components/layout/Logo";
 import { Button } from "@/components/ui/button";
 import { CategoryCard } from "@/features/services/CategoryCard";
 import { fetchBusinessInfo, fetchCatalog, fetchPortfolio } from "@/features/services/publicData";
@@ -46,6 +47,7 @@ export default function HomePage() {
         <div className="absolute inset-0 -z-10 hidden bg-gradient-to-l from-cream from-35% via-cream/80 to-transparent md:block" />
         <div className="container relative -mt-4 flex flex-col pb-10 md:mt-0 md:min-h-[38rem] md:justify-center md:py-20">
           <div className="max-w-xl text-center md:text-start">
+            <Logo tone="dark" className="mx-auto mb-6 h-36 sm:h-44 md:mx-0" priority />
             <p className="font-display text-xs uppercase tracking-brand text-ink/60" lang="en">
               {t("home.heroEyebrow")}
             </p>
