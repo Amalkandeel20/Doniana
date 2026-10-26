@@ -1,0 +1,21 @@
+// Strings for the admin revenue page.
+export const revenueAr = {
+  title: "الإيرادات",
+  text: "المبالغ حسب الأسعار المسجّلة في كل موعد، بتوقيت إسرائيل. المواعيد الملغاة لا تُحسب.",
+  thisMonthEarned: "تم تحصيله هذا الشهر",
+  thisMonthExpected: "متوقع لبقية الشهر",
+  periodTotal: "المجموع خلال {n} شهراً",
+  appointments: "{n} موعد",
+  earned: "تم تحصيله",
+  expected: "متوقع (مواعيد قادمة)",
+  range: "الفترة",
+  months: "{n} أشهر",
+  chartLabel: "الإيرادات الشهرية",
+  showTable: "عرض كجدول",
+  month: "الشهر",
+  count: "عدد المواعيد",
+  earnedHint: "«تم تحصيله» يشمل كل موعد غير ملغى بدأ وقته، حتى لو لم يُسجَّل كمكتمل.",
+  empty: "لا توجد مواعيد في هذه الفترة بعد.",
+  loadError: "تعذّر تحميل الإيرادات.",
+  retry: "إعادة المحاولة",
+};

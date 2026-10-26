@@ -5,6 +5,7 @@ export const shellAr = {
     appointments: "المواعيد",
     availability: "أوقات العمل",
     services: "الخدمات",
+    revenue: "الإيرادات",
     portfolio: "المعرض",
     notifications: "الرسائل",
     settings: "الإعدادات",

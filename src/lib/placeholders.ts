@@ -12,4 +12,4 @@ export const placeholders = {
   portfolio: [1, 2, 3, 4, 5, 6].map((n) => `/placeholders/portfolio-${n}.svg`),
 };
 
-export const LOGO_SRC = "/brand/doniana-logo.jpg";
+export const LOGO_SRC = "/brand/doniana-logo-white.jpg";

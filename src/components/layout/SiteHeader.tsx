@@ -18,7 +18,7 @@ export function SiteHeader() {
     <header className="sticky top-0 z-40 bg-black text-ivory">
       <div className="container flex h-16 items-center justify-between gap-4 sm:h-20">
         <Link to="/" aria-label="DONIANA" className="shrink-0" onClick={() => setOpen(false)}>
-          <Logo className="h-14 sm:h-[4.5rem]" priority />
+          <Logo className="ms-2 h-14 sm:ms-6 sm:h-[4.5rem]" priority />
         </Link>
 
         <nav aria-label={t("nav.menu")} className="hidden items-center gap-8 md:flex">

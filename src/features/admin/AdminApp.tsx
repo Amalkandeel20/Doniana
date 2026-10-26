@@ -13,6 +13,7 @@ const ServicesPage = lazy(() => import("./pages/ServicesPage"));
 const PortfolioPage = lazy(() => import("./pages/PortfolioPage"));
 const NotificationsPage = lazy(() => import("./pages/NotificationsPage"));
 const SettingsPage = lazy(() => import("./pages/SettingsPage"));
+const RevenuePage = lazy(() => import("./pages/RevenuePage"));
 
 export default function AdminApp() {
   const session = useAdminSession();
@@ -38,6 +39,7 @@ export default function AdminApp() {
         <Route path="portfolio" element={page(<PortfolioPage />)} />
         <Route path="notifications" element={page(<NotificationsPage />)} />
         <Route path="settings" element={page(<SettingsPage />)} />
+        <Route path="revenue" element={page(<RevenuePage />)} />
         <Route path="*" element={page(<CalendarPage />)} />
       </Route>
     </Routes>

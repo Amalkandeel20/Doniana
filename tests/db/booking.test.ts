@@ -367,6 +367,47 @@ describe("administrator operations", () => {
   });
 });
 
+describe("settings defaults", () => {
+  it("defaults to a 10-minute break between appointments", async () => {
+    const [row] = await db.query<{ d: string }>(
+      `select column_default as d from information_schema.columns where table_name = 'business_settings' and column_name = 'buffer_minutes'`,
+    );
+    expect(row!.d).toBe("10");
+  });
+});
+
+describe("monthly revenue (admin)", () => {
+  type Row = { month: string; earned_agorot: string; expected_agorot: string; appointments: number };
+
+  it("sums earned (past) and expected (upcoming) per Israel month, excluding cancellations", async () => {
+    await openAllWeek(db, "00:00", "24:00");
+    const [{ past, future }] = (await db.query<{ past: Date; future: Date }>(
+      `select date_trunc('hour', now()) - interval '2 hours' as past, date_trunc('hour', now()) + interval '3 hours' as future`,
+    )) as [{ past: Date; future: Date }];
+    await book(db, { service: svc.lamination!, addonIds: [tint], startsAt: new Date(past).toISOString(), source: "admin", override: true, notify: false }); // ₪230 earned
+    await book(db, { service: svc.shaping!, startsAt: new Date(future).toISOString() }); // ₪70 expected
+    const cancelled = await book(db, { service: svc.shapingFacial!, startsAt: await localInstant(db, localDateIn(2), "10:00") });
+    await db.query(`select public.cancel_appointment_by_token($1)`, [sha256Hex(cancelled.token)]);
+
+    const rows = await asRole<Row>(db, "authenticated", `select * from public.admin_monthly_revenue(12)`, [], ADMIN_ID);
+    expect(rows).toHaveLength(12);
+    const total = (k: "earned_agorot" | "expected_agorot") => rows.reduce((s, r) => s + Number(r[k]), 0);
+    expect(total("earned_agorot")).toBe(23000);
+    expect(total("expected_agorot")).toBe(7000);
+    expect(rows.reduce((s, r) => s + r.appointments, 0)).toBe(2);
+    // chronological, ending with the current Israel month
+    const [{ m }] = (await db.query<{ m: string }>(
+      `select to_char(date_trunc('month', now() at time zone 'Asia/Jerusalem'), 'YYYY-MM') as m`,
+    )) as [{ m: string }];
+    expect(String(rows.at(-1)!.month).slice(0, 7) === m || new Date(rows.at(-1)!.month).toISOString().slice(0, 7) === m).toBe(true);
+  });
+
+  it("is admin-only", async () => {
+    await expectDbError(asRole(db, "authenticated", `select * from public.admin_monthly_revenue()`, [], OTHER_USER_ID), "forbidden");
+    await expectDbError(asRole(db, "anon", `select * from public.admin_monthly_revenue()`), "permission denied");
+  });
+});
+
 describe("row level security", () => {
   it("hides appointments and personal data from the public", async () => {
     await book(db, { service: svc.shaping!, startsAt: await localInstant(db, localDateIn(3), "10:00") });

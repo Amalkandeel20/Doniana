@@ -1,5 +1,5 @@
 import { NavLink, Outlet, Link } from "react-router-dom";
-import { Bell, CalendarDays, Clock, ExternalLink, Images, ListChecks, LogOut, Settings, Sparkles } from "lucide-react";
+import { Bell, CalendarDays, Clock, ExternalLink, Images, ListChecks, LogOut, Settings, Sparkles, Wallet } from "lucide-react";
 import { Logo } from "@/components/layout/Logo";
 import { t } from "@/i18n";
 import { supabase } from "@/lib/supabase";
@@ -10,6 +10,7 @@ const adminNav = [
   { to: "/admin/appointments", label: t("admin.nav.appointments"), icon: ListChecks, mobile: true },
   { to: "/admin/availability", label: t("admin.nav.availability"), icon: Clock, mobile: true },
   { to: "/admin/services", label: t("admin.nav.services"), icon: Sparkles, mobile: true },
+  { to: "/admin/revenue", label: t("admin.nav.revenue"), icon: Wallet, mobile: false },
   { to: "/admin/portfolio", label: t("admin.nav.portfolio"), icon: Images, mobile: false },
   { to: "/admin/notifications", label: t("admin.nav.notifications"), icon: Bell, mobile: false },
   { to: "/admin/settings", label: t("admin.nav.settings"), icon: Settings, mobile: true },
@@ -53,6 +54,9 @@ export function AdminLayout() {
           <Logo className="h-12" />
         </Link>
         <div className="flex items-center gap-1">
+          <NavLink to="/admin/revenue" className="rounded-full p-2.5 hover:bg-white/10" aria-label={t("admin.nav.revenue")}>
+            <Wallet className="size-5" />
+          </NavLink>
           <NavLink to="/admin/notifications" className="rounded-full p-2.5 hover:bg-white/10" aria-label={t("admin.nav.notifications")}>
             <Bell className="size-5" />
           </NavLink>

@@ -18,7 +18,7 @@ Still needed from the client. Each item is configurable and none needs code chan
 | 7 | Minimum advance-booking notice | 0 minutes (same-day allowed, per client) | `/admin/availability` |
 | 8 | Maximum booking horizon | 60 days | `/admin/availability` |
 | 9 | Slot granularity (start times every …) | 15 minutes | `/admin/availability` |
-| 10 | Buffer between appointments | 0 minutes | `/admin/availability` |
+| 10 | Buffer between appointments | **10 minutes** (client request, 2026-10-26) | `/admin/availability` |
 | 11 | Accept Palestinian mobile numbers (+970 56/59)? | Only Israeli mobiles (050–055, 058) | `supabase/functions/_shared/domain/phone.ts` |
 | 12 | Data-retention period | Proposed 24 months, then anonymise (not scheduled yet) | SECURITY.md |
 | 13 | Privacy notice text and legal review | Not published | footer link (to add) |
