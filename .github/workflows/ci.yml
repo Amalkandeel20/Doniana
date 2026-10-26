@@ -109,8 +109,19 @@ jobs:
             [ "$code" != "000" ] && [ "$code" != "502" ] && [ "$code" != "503" ] && break
             sleep 2
           done
-      - run: npx playwright install --with-deps chromium
-        timeout-minutes: 10
+      # Chromium's system libraries are already on GitHub's Ubuntu 24.04 image (it ships Chrome), so we
+      # skip `--with-deps`: its apt download from the Ubuntu mirror has stalled runs for 10+ minutes.
+      # The browser itself comes from Playwright's CDN and is cached between runs.
+      - name: Playwright version
+        id: pw
+        run: echo "version=$(node -p "require('@playwright/test/package.json').version")" >> "$GITHUB_OUTPUT"
+      - uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ steps.pw.outputs.version }}-chromium
+      - name: Install Chromium
+        run: npx playwright install chromium
+        timeout-minutes: 5
       - run: npx playwright test
       - name: Lighthouse (performance & accessibility budgets)
         run: |
