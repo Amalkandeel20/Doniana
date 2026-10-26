@@ -7,12 +7,16 @@ import { cn } from "@/lib/utils";
 const CROP = { x: 217, y: 14, w: 1114, h: 974, imgW: 1536 };
 
 /**
- * The client's official logo, unaltered, always on a black surface. Size it by height
- * (e.g. `h-14`); the width follows the mark's aspect ratio.
+ * The client's official logo. `tone="light"` is the supplied artwork as-is (white mark on black);
+ * `tone="dark"` shows the same file inverted — black mark on a white background — at the client's
+ * request, without editing the file. Size it by height (e.g. `h-14`); the width follows the mark.
  */
-export function Logo({ className, priority }: { className?: string; priority?: boolean }) {
+export function Logo({ className, priority, tone = "light" }: { className?: string; priority?: boolean; tone?: "light" | "dark" }) {
   return (
-    <span className={cn("relative block overflow-hidden bg-black", className)} style={{ aspectRatio: `${CROP.w} / ${CROP.h}` }}>
+    <span
+      className={cn("relative block overflow-hidden", tone === "dark" ? "bg-white" : "bg-black", className)}
+      style={{ aspectRatio: `${CROP.w} / ${CROP.h}` }}
+    >
       <img
         src={LOGO_SRC}
         alt="DONIANA — Piercing & Eyebrows Lamination"
@@ -25,6 +29,8 @@ export function Logo({ className, priority }: { className?: string; priority?: b
           width: `${(CROP.imgW / CROP.w) * 100}%`,
           left: `${(-CROP.x / CROP.w) * 100}%`,
           top: `${(-CROP.y / CROP.h) * 100}%`,
+          // brightness lifts the inverted #fefefe background to pure white so no box shows on white
+          ...(tone === "dark" ? { filter: "invert(1) brightness(1.04)" } : {}),
         }}
       />
     </span>

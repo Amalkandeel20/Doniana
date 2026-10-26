@@ -30,21 +30,21 @@ export default function HomePage() {
   return (
     <>
       {/* Hero */}
-      <section className="relative overflow-hidden bg-black text-ivory">
+      <section className="relative overflow-hidden bg-white text-ink">
         <div className="container grid items-center gap-10 pb-14 pt-8 md:grid-cols-2 md:gap-14 md:pb-24 md:pt-14">
           <div className="flex flex-col items-center text-center md:items-start md:text-start">
-            <Logo className="h-44 sm:h-56" priority />
+            <Logo tone="dark" className="h-44 sm:h-56" priority />
             <h1 className="mt-6 text-balance text-4xl font-light leading-tight sm:text-5xl">{t("home.heroTitle")}</h1>
-            <p className="mt-4 max-w-md text-balance text-base leading-relaxed text-ivory/75 sm:text-lg">{t("home.heroText")}</p>
+            <p className="mt-4 max-w-md text-balance text-base leading-relaxed text-muted-foreground sm:text-lg">{t("home.heroText")}</p>
             <div className="mt-8 flex w-full flex-col items-center gap-3 sm:w-auto sm:flex-row">
-              <Button asChild variant="champagne" size="lg" className="w-full sm:w-auto" data-testid="hero-book">
+              <Button asChild size="lg" className="w-full sm:w-auto" data-testid="hero-book">
                 <Link to="/book">
                   {t("home.bookNow")}
                   <span className="font-display text-sm tracking-wider opacity-70">· {t("home.bookNowEn")}</span>
                 </Link>
               </Button>
               {settings?.whatsapp_phone && (
-                <Button asChild variant="light" size="lg" className="w-full sm:w-auto">
+                <Button asChild variant="outline" size="lg" className="w-full sm:w-auto">
                   <a href={whatsappLink(settings.whatsapp_phone)} target="_blank" rel="noopener noreferrer">
                     <MessageCircle aria-hidden /> {t("home.whatsapp")}
                   </a>
@@ -59,7 +59,7 @@ export default function HomePage() {
               width={1200}
               height={1500}
               {...{ fetchpriority: "high" }}
-              className="aspect-[4/5] w-full rounded-[2rem] object-cover ring-1 ring-white/10"
+              className="aspect-[4/5] w-full rounded-[2rem] object-cover ring-1 ring-black/5"
             />
             <div className="pointer-events-none absolute -bottom-3 -start-3 h-24 w-24 rounded-full border border-champagne/40" />
           </figure>
