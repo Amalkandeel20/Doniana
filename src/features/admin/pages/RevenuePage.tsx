@@ -26,7 +26,7 @@ function shekels(agorot: number): string {
 
 // Expected revenue is the same measure as earned, so it shares the ink colour and is told apart by
 // a diagonal hatch (works in colour-blind, print and forced-colours modes) plus the legend.
-const HATCH = "repeating-linear-gradient(135deg, hsl(var(--foreground) / 0.55) 0 2px, transparent 2px 6px)";
+const HATCH = "repeating-linear-gradient(135deg, hsl(var(--primary) / 0.6) 0 2px, transparent 2px 6px)";
 
 export default function RevenuePage() {
   const [range, setRange] = useState<(typeof RANGES)[number]>(6);
@@ -47,7 +47,7 @@ export default function RevenuePage() {
     <div className="space-y-6">
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-semibold">{t("admin.revenue.title")}</h1>
+          <h1 className="font-heading text-3xl">{t("admin.revenue.title")}</h1>
           <p className="mt-1 max-w-xl text-sm text-muted-foreground">{t("admin.revenue.text")}</p>
         </div>
         <div className="flex items-center gap-2" role="group" aria-label={t("admin.revenue.range")}>
@@ -89,10 +89,10 @@ export default function RevenuePage() {
               </h2>
               <ul className="flex flex-wrap gap-4 text-xs text-muted-foreground">
                 <li className="flex items-center gap-1.5">
-                  <span className="inline-block size-3 rounded-sm bg-foreground" aria-hidden /> {t("admin.revenue.earned")}
+                  <span className="inline-block size-3 rounded-sm bg-primary" aria-hidden /> {t("admin.revenue.earned")}
                 </li>
                 <li className="flex items-center gap-1.5">
-                  <span className="inline-block size-3 rounded-sm border border-foreground/60" style={{ backgroundImage: HATCH }} aria-hidden />
+                  <span className="inline-block size-3 rounded-sm border border-primary/60" style={{ backgroundImage: HATCH }} aria-hidden />
                   {t("admin.revenue.expected")}
                 </li>
               </ul>
@@ -146,14 +146,14 @@ export default function RevenuePage() {
                         )}
                         {r.expected_agorot > 0 && (
                           <span
-                            className={cn("block w-full border border-b-0 border-foreground/60", r.earned_agorot === 0 && "rounded-t")}
+                            className={cn("block w-full border border-b-0 border-primary/60", r.earned_agorot === 0 && "rounded-t")}
                             style={{ height: `${(r.expected_agorot / max) * 100}%`, backgroundImage: HATCH }}
                           />
                         )}
                         {r.earned_agorot > 0 && (
                           <span
                             className={cn(
-                              "block w-full bg-foreground transition-opacity group-hover:opacity-80",
+                              "block w-full bg-primary transition-opacity group-hover:opacity-80",
                               r.expected_agorot === 0 && "rounded-t",
                               r.expected_agorot > 0 && "border-t-2 border-card",
                             )}
@@ -211,10 +211,10 @@ export default function RevenuePage() {
 
 function Stat({ label, value, sub, strong }: { label: string; value: string; sub: string; strong?: boolean }) {
   return (
-    <div className={cn("rounded-3xl border p-5", strong ? "bg-ink text-ivory" : "bg-card")}>
-      <p className={cn("text-sm", strong ? "text-ivory/70" : "text-muted-foreground")}>{label}</p>
+    <div className={cn("rounded-3xl border p-5", strong ? "bg-primary text-primary-foreground" : "bg-card")}>
+      <p className={cn("text-sm", strong ? "text-primary-foreground/75" : "text-muted-foreground")}>{label}</p>
       <p className="mt-1 text-3xl font-semibold tabular-nums">{value}</p>
-      <p className={cn("mt-1 text-xs", strong ? "text-ivory/60" : "text-muted-foreground")}>{sub}</p>
+      <p className={cn("mt-1 text-xs", strong ? "text-primary-foreground/65" : "text-muted-foreground")}>{sub}</p>
     </div>
   );
 }

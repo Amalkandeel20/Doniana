@@ -19,9 +19,9 @@ const adminNav = [
 export function AdminLayout() {
   return (
     <div className="min-h-dvh bg-background md:grid md:grid-cols-[15rem_1fr]">
-      <aside className="sticky top-0 hidden h-dvh flex-col bg-black p-4 text-ivory md:flex">
+      <aside className="sticky top-0 hidden h-dvh flex-col border-e border-border bg-card p-4 text-ink md:flex">
         <Link to="/admin" className="mx-auto">
-          <Logo className="h-24" />
+          <Logo tone="dark" className="h-24" />
         </Link>
         <nav className="mt-6 flex flex-1 flex-col gap-1" aria-label={t("admin.title")}>
           {adminNav.map((item) => (
@@ -30,7 +30,7 @@ export function AdminLayout() {
               to={item.to}
               end={item.end}
               className={({ isActive }) =>
-                cn("flex items-center gap-3 rounded-2xl px-4 py-3 text-ivory/75 transition-colors hover:bg-white/10 hover:text-ivory", isActive && "bg-white/10 text-ivory")
+                cn("flex items-center gap-3 rounded-2xl px-4 py-3 text-ink/75 transition-colors hover:bg-secondary hover:text-ink", isActive && "bg-primary text-primary-foreground hover:bg-primary hover:text-primary-foreground")
               }
             >
               <item.icon className="size-5" aria-hidden />
@@ -38,32 +38,32 @@ export function AdminLayout() {
             </NavLink>
           ))}
         </nav>
-        <div className="flex flex-col gap-1 border-t border-white/10 pt-3 text-sm">
-          <a href="/" target="_blank" rel="noopener" className="flex items-center gap-3 rounded-2xl px-4 py-2.5 text-ivory/60 hover:bg-white/10">
+        <div className="flex flex-col gap-1 border-t border-border pt-3 text-sm">
+          <a href="/" target="_blank" rel="noopener" className="flex items-center gap-3 rounded-2xl px-4 py-2.5 text-ink/60 hover:bg-secondary">
             <ExternalLink className="size-4" aria-hidden /> {t("admin.nav.viewSite")}
           </a>
-          <button type="button" onClick={() => supabase.auth.signOut()} className="flex items-center gap-3 rounded-2xl px-4 py-2.5 text-ivory/60 hover:bg-white/10" data-testid="admin-signout">
+          <button type="button" onClick={() => supabase.auth.signOut()} className="flex items-center gap-3 rounded-2xl px-4 py-2.5 text-ink/60 hover:bg-secondary" data-testid="admin-signout">
             <LogOut className="size-4" aria-hidden /> {t("admin.nav.signOut")}
           </button>
         </div>
       </aside>
 
       {/* Phone header */}
-      <header className="sticky top-0 z-30 flex h-14 items-center justify-between bg-black px-4 text-ivory md:hidden">
+      <header className="sticky top-0 z-30 flex h-16 items-center justify-between border-b border-border bg-card px-4 text-ink md:hidden">
         <Link to="/admin">
-          <Logo className="h-12" />
+          <Logo tone="dark" className="h-14" />
         </Link>
         <div className="flex items-center gap-1">
-          <NavLink to="/admin/revenue" className="rounded-full p-2.5 hover:bg-white/10" aria-label={t("admin.nav.revenue")}>
+          <NavLink to="/admin/revenue" className="rounded-full p-2.5 hover:bg-secondary" aria-label={t("admin.nav.revenue")}>
             <Wallet className="size-5" />
           </NavLink>
-          <NavLink to="/admin/notifications" className="rounded-full p-2.5 hover:bg-white/10" aria-label={t("admin.nav.notifications")}>
+          <NavLink to="/admin/notifications" className="rounded-full p-2.5 hover:bg-secondary" aria-label={t("admin.nav.notifications")}>
             <Bell className="size-5" />
           </NavLink>
-          <NavLink to="/admin/portfolio" className="rounded-full p-2.5 hover:bg-white/10" aria-label={t("admin.nav.portfolio")}>
+          <NavLink to="/admin/portfolio" className="rounded-full p-2.5 hover:bg-secondary" aria-label={t("admin.nav.portfolio")}>
             <Images className="size-5" />
           </NavLink>
-          <button type="button" onClick={() => supabase.auth.signOut()} className="rounded-full p-2.5 hover:bg-white/10" aria-label={t("admin.nav.signOut")}>
+          <button type="button" onClick={() => supabase.auth.signOut()} className="rounded-full p-2.5 hover:bg-secondary" aria-label={t("admin.nav.signOut")}>
             <LogOut className="size-5" />
           </button>
         </div>
@@ -82,7 +82,7 @@ export function AdminLayout() {
               key={item.to}
               to={item.to}
               end={item.end}
-              className={({ isActive }) => cn("flex flex-col items-center gap-1 py-2.5 text-[0.7rem] text-muted-foreground", isActive && "font-semibold text-foreground")}
+              className={({ isActive }) => cn("flex flex-col items-center gap-1 py-2.5 text-[0.7rem] text-muted-foreground", isActive && "font-semibold text-primary")}
             >
               <item.icon className="size-6" aria-hidden />
               {item.label}

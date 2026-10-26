@@ -79,7 +79,7 @@ export default function AppointmentsPage() {
   return (
     <div className="space-y-5">
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <h1 className="text-2xl font-semibold">{t(`${K}.list.title`)}</h1>
+        <h1 className="font-heading text-3xl">{t(`${K}.list.title`)}</h1>
         <Button size="lg" onClick={() => setFormOpen(true)} className="max-sm:h-12 max-sm:px-5 max-sm:text-base">
           <Plus aria-hidden />
           {t(`${K}.newAppointment`)}
@@ -116,7 +116,7 @@ export default function AppointmentsPage() {
             onClick={() => setTab(key)}
             className={cn(
               "min-h-11 rounded-full px-5 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
-              tab === key ? "bg-ink text-ivory shadow-sm" : "text-foreground/80 hover:bg-white",
+              tab === key ? "bg-primary text-primary-foreground shadow-sm" : "text-foreground/80 hover:bg-white",
             )}
           >
             {t(`${K}.list.tabs.${key}`)}

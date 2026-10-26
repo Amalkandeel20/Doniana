@@ -45,7 +45,7 @@ const locale: LocaleInput = {
 const TIME_FORMAT = { hour: "2-digit", minute: "2-digit", hour12: false } as const;
 
 const COLORS: Record<AppointmentStatus, { bg: string; border: string; text: string }> = {
-  confirmed: { bg: "#0a0a0a", border: "#0a0a0a", text: "#faf7f2" },
+  confirmed: { bg: "#44594b", border: "#44594b", text: "#fbf7f2" },
   completed: { bg: "#e7e2da", border: "#d6cfc4", text: "#4a443c" },
   cancelled: { bg: "#ffe4e6", border: "#fecdd3", text: "#9f1239" },
 };
@@ -172,7 +172,7 @@ export default function CalendarPage() {
   return (
     <div className="space-y-4">
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <h1 className="text-2xl font-semibold">{t(`${K}.calendar.title`)}</h1>
+        <h1 className="font-heading text-3xl">{t(`${K}.calendar.title`)}</h1>
         <Button size="lg" onClick={openCreate} className="max-sm:h-12 max-sm:px-5 max-sm:text-base">
           <Plus aria-hidden />
           {t(`${K}.newAppointment`)}
@@ -189,7 +189,7 @@ export default function CalendarPage() {
               onClick={() => changeView(v.type)}
               className={cn(
                 "min-h-11 rounded-full px-4 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
-                viewType === v.type ? "bg-ink text-ivory shadow-sm" : "text-foreground/80 hover:bg-white",
+                viewType === v.type ? "bg-primary text-primary-foreground shadow-sm" : "text-foreground/80 hover:bg-white",
               )}
             >
               {t(v.label)}

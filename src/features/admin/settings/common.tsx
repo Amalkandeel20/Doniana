@@ -12,7 +12,7 @@ export function PageHeader({ title, text, action }: { title: string; text?: stri
   return (
     <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
       <div>
-        <h1 className="text-2xl font-semibold">{title}</h1>
+        <h1 className="font-heading text-3xl">{title}</h1>
         {text && <p className="mt-1 max-w-2xl text-muted-foreground">{text}</p>}
       </div>
       {action}

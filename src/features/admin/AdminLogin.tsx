@@ -30,11 +30,11 @@ export function AdminLogin({ notAdmin }: { notAdmin?: boolean }) {
   });
 
   return (
-    <div className="flex min-h-dvh flex-col items-center justify-center bg-black px-4 py-10">
-      <Logo className="h-36" priority />
-      <form onSubmit={onSubmit} noValidate className="mt-8 w-full max-w-sm space-y-5 rounded-3xl bg-ivory p-6 shadow-xl" aria-labelledby="login-title">
+    <div className="flex min-h-dvh flex-col items-center justify-center bg-cream px-4 py-10">
+      <Logo tone="dark" className="h-36" priority />
+      <form onSubmit={onSubmit} noValidate className="mt-8 w-full max-w-sm space-y-5 rounded-3xl border border-border bg-card p-6 shadow-lg" aria-labelledby="login-title">
         <div>
-          <h1 id="login-title" className="text-2xl font-semibold">
+          <h1 id="login-title" className="font-heading text-3xl">
             {t("admin.login.title")}
           </h1>
           <p className="mt-1 text-sm text-muted-foreground">{t("admin.login.text")}</p>

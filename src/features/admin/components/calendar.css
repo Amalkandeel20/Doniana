@@ -7,13 +7,13 @@
   --fc-today-bg-color: rgba(201, 179, 138, 0.12);
   --fc-now-indicator-color: #75603c;
   --fc-list-event-hover-bg-color: #faf7f2;
-  --fc-button-text-color: #0a0a0a;
+  --fc-button-text-color: #44594b;
   --fc-button-bg-color: #ffffff;
   --fc-button-border-color: #e5ddd0;
   --fc-button-hover-bg-color: #faf7f2;
   --fc-button-hover-border-color: #c9b38a;
-  --fc-button-active-bg-color: #0a0a0a;
-  --fc-button-active-border-color: #0a0a0a;
+  --fc-button-active-bg-color: #44594b;
+  --fc-button-active-border-color: #44594b;
   --fc-event-border-color: transparent;
   font-family: inherit;
 }
@@ -74,7 +74,7 @@
 
 .dn-calendar .fc .fc-col-header-cell-cushion,
 .dn-calendar .fc .fc-daygrid-day-number {
-  color: #0a0a0a;
+  color: #44594b;
   font-weight: 500;
   padding: 0.5rem 0.25rem;
 }
