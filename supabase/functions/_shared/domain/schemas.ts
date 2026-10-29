@@ -66,3 +66,12 @@ export const adminCreateAppointmentSchema = z.object({
   notifyCustomer: z.boolean().default(true),
 });
 export type AdminCreateAppointment = z.input<typeof adminCreateAppointmentSchema>;
+
+export const adminAccountSchema = z
+  .object({
+    currentPassword: z.string().min(1).max(200),
+    newEmail: z.string().trim().toLowerCase().email().max(254).optional(),
+    newPassword: z.string().min(10).max(200).optional(),
+  })
+  .refine((v) => v.newEmail !== undefined || v.newPassword !== undefined, { path: ["newEmail"] });
+export type AdminAccountRequest = z.input<typeof adminAccountSchema>;

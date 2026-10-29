@@ -5,6 +5,7 @@ import { generateAvailability } from "./domain/availability.ts";
 import { normalizeIsraeliMobile } from "./domain/phone.ts";
 import { quote } from "./domain/pricing.ts";
 import {
+  adminAccountSchema,
   adminCreateAppointmentSchema,
   availabilityRequestSchema,
   createBookingRequestSchema,
@@ -198,4 +199,40 @@ export async function handleAdminCreate(body: unknown, adminUserId: string, deps
   });
   if (error) throw fromDbError(error);
   return { status: 201, body: { appointment: (data as { appointment: BookedRow }).appointment } };
+}
+
+// ---------------------------------------------------------------- admin account
+
+/**
+ * Changes the signed-in admin's own login email and/or password. The current password is
+ * re-checked first, and the email is set as confirmed so no mail round-trip is needed.
+ */
+export async function handleAdminAccount(
+  body: unknown,
+  adminUserId: string,
+  deps: Deps,
+  passwordMatches: (email: string, password: string) => Promise<boolean>,
+) {
+  const parsed = adminAccountSchema.safeParse(body);
+  if (!parsed.success) throw validationError(parsed.error);
+  const input = parsed.data;
+  await rateLimit(deps.db, `account:${adminUserId}`, 10, 600);
+
+  const { data: current, error: readError } = await deps.db.auth.admin.getUserById(adminUserId);
+  if (readError || !current.user?.email) throw new HttpError(500, "internal_error");
+  if (!(await passwordMatches(current.user.email, input.currentPassword))) throw new HttpError(403, "wrong_password");
+
+  const changes: { email?: string; email_confirm?: boolean; password?: string } = {};
+  if (input.newEmail && input.newEmail !== current.user.email) Object.assign(changes, { email: input.newEmail, email_confirm: true });
+  if (input.newPassword) changes.password = input.newPassword;
+  if (!Object.keys(changes).length) return { body: { email: current.user.email } };
+
+  const { data, error } = await deps.db.auth.admin.updateUserById(adminUserId, changes);
+  if (error) {
+    if (/already|exists|registered/i.test(error.message)) throw new HttpError(409, "email_taken");
+    if (/password/i.test(error.message)) throw new HttpError(400, "weak_password");
+    console.error("account_update_failed", error.message);
+    throw new HttpError(500, "internal_error");
+  }
+  return { body: { email: data.user.email } };
 }

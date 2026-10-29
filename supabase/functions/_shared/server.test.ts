@@ -2,7 +2,7 @@
 import { describe, expect, it, vi } from "vitest";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { deriveManageToken, manageTokenHash } from "./crypto.ts";
-import { handleCreateBooking, handleManage, type Deps } from "./handlers.ts";
+import { handleAdminAccount, handleCreateBooking, handleManage, type Deps } from "./handlers.ts";
 import { HttpError, endpoint } from "./http.ts";
 import { TwilioSmsProvider, createSmsProvider, verifyTwilioSignature } from "./notifications/providers.ts";
 import { renderJob, renderTemplate, type DeliveryJob } from "./notifications/worker.ts";
@@ -106,7 +106,7 @@ describe("endpoint wrapper", () => {
   });
 
   it("always allows the public site", async () => {
-    const handler = endpoint(env({}), async () => ({}));
+    const handler = endpoint(env({}), async () => ({ body: {} }));
     const pre = await handler(new Request("https://f", { method: "OPTIONS", headers: { origin: "https://donianabeauty.com" } }));
     expect(pre.headers.get("access-control-allow-origin")).toBe("https://donianabeauty.com");
   });
@@ -194,5 +194,42 @@ describe("SMS rendering", () => {
 
   it("leaves unknown placeholders empty", () => {
     expect(renderTemplate("مرحبا {{name}} {{unknown}}", { name: "دنيا" })).toBe("مرحبا دنيا");
+  });
+});
+
+describe("admin-account handler", () => {
+  function accountDb(updateError: { message: string } | null = null) {
+    const updateUserById = vi.fn(async (_id: string, changes: { email?: string }) => ({
+      data: { user: { email: changes.email ?? "owner@doniana.test" } },
+      error: updateError,
+    }));
+    const db = {
+      rpc: vi.fn(async () => ({ data: true, error: null })),
+      auth: { admin: { getUserById: vi.fn(async () => ({ data: { user: { email: "owner@doniana.test" } }, error: null })), updateUserById } },
+    } as unknown as SupabaseClient;
+    return { db, updateUserById };
+  }
+
+  it("refuses changes when the current password is wrong", async () => {
+    const { db, updateUserById } = accountDb();
+    await expect(
+      handleAdminAccount({ currentPassword: "nope", newEmail: "me@gmail.com" }, "u1", deps(db), async () => false),
+    ).rejects.toMatchObject({ status: 403, code: "wrong_password" });
+    expect(updateUserById).not.toHaveBeenCalled();
+  });
+
+  it("sets a confirmed new email and password for the signed-in admin only", async () => {
+    const { db, updateUserById } = accountDb();
+    const check = vi.fn(async () => true);
+    const res = await handleAdminAccount({ currentPassword: "old", newEmail: " Me@Gmail.com ", newPassword: "a-long-password" }, "u1", deps(db), check);
+    expect(check).toHaveBeenCalledWith("owner@doniana.test", "old");
+    expect(updateUserById).toHaveBeenCalledWith("u1", { email: "me@gmail.com", email_confirm: true, password: "a-long-password" });
+    expect(res.body).toEqual({ email: "me@gmail.com" });
+  });
+
+  it("rejects short passwords and reports a taken email", async () => {
+    const { db } = accountDb({ message: "A user with this email address has already been registered" });
+    await expect(handleAdminAccount({ currentPassword: "old", newPassword: "short" }, "u1", deps(db), async () => true)).rejects.toMatchObject({ status: 400 });
+    await expect(handleAdminAccount({ currentPassword: "old", newEmail: "x@y.com" }, "u1", deps(db), async () => true)).rejects.toMatchObject({ status: 409, code: "email_taken" });
   });
 });

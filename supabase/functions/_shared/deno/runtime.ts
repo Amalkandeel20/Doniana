@@ -43,6 +43,15 @@ export function userClient(jwt: string): SupabaseClient {
   });
 }
 
+/** True when the email/password pair signs in; used to re-check the admin before account changes. */
+export async function passwordMatches(email: string, password: string): Promise<boolean> {
+  const client = createClient(required("SUPABASE_URL"), required("SUPABASE_ANON_KEY"), {
+    auth: { persistSession: false, autoRefreshToken: false },
+  });
+  const { error } = await client.auth.signInWithPassword({ email, password });
+  return !error;
+}
+
 export function deps(): Deps {
   return { db: serviceClient(), env, now: () => new Date(), fetch };
 }

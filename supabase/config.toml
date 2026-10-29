@@ -58,6 +58,9 @@ verify_jwt = false
 [functions.manage-appointment]
 verify_jwt = false
 
+[functions.admin-account]
+verify_jwt = false
+
 [functions.admin-create-appointment]
 verify_jwt = false
 
