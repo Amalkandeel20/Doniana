@@ -15,9 +15,10 @@
     },
     "production": {
       "name": "doniana",
-      // Replace with the client's domain once it is purchased and added to Cloudflare:
-      // "routes": [{ "pattern": "doniana.example", "custom_domain": true }, { "pattern": "www.doniana.example", "custom_domain": true }]
-      "routes": []
+      "routes": [
+        { "pattern": "donianabeauty.com", "custom_domain": true },
+        { "pattern": "www.donianabeauty.com", "custom_domain": true }
+      ]
     }
   }
 }

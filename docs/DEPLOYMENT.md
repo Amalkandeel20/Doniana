@@ -72,7 +72,7 @@ Local development never touches either one. `seed.sql` is applied only by `supab
 ## 3. Cloudflare
 
 1. Create an API token with the "Edit Cloudflare Workers" template and note the account ID.
-2. Add the domain to Cloudflare and uncomment the `routes` in `wrangler.jsonc` (production) with
+2. The domain (donianabeauty.com, added to Cloudflare) is set in the production `routes` in `wrangler.jsonc` with
    `custom_domain: true`. Cloudflare provisions HTTPS automatically. Turn on "Always Use HTTPS".
 3. `npm run build` writes `dist/_headers`: CSP limited to the environment's Supabase origin (plus
    Turnstile if enabled), HSTS, `no-referrer` + `no-store` for `/a`, and `noindex` for `/a` and `/admin`.
