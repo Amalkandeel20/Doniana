@@ -105,6 +105,12 @@ describe("endpoint wrapper", () => {
     expect(await res.text()).not.toContain("password");
   });
 
+  it("always allows the public site", async () => {
+    const handler = endpoint(env({}), async () => ({}));
+    const pre = await handler(new Request("https://f", { method: "OPTIONS", headers: { origin: "https://donianabeauty.com" } }));
+    expect(pre.headers.get("access-control-allow-origin")).toBe("https://donianabeauty.com");
+  });
+
   it("passes HttpErrors through as JSON", async () => {
     const handler = endpoint(e, async () => {
       throw new HttpError(409, "slot_unavailable");

@@ -15,13 +15,19 @@ export class HttpError extends Error {
   }
 }
 
+/** The public site is always allowed; ALLOWED_ORIGINS adds others (local dev, staging hosts). */
+export const SITE_ORIGINS = ["https://donianabeauty.com", "https://www.donianabeauty.com"];
+
 export function allowedOrigin(req: Request, env: Env): string | null {
   const origin = req.headers.get("origin");
   if (!origin) return null;
-  const allowed = (env.get("ALLOWED_ORIGINS") ?? "")
-    .split(",")
-    .map((s) => s.trim())
-    .filter(Boolean);
+  const allowed = [
+    ...SITE_ORIGINS,
+    ...(env.get("ALLOWED_ORIGINS") ?? "")
+      .split(",")
+      .map((s) => s.trim())
+      .filter(Boolean),
+  ];
   return allowed.includes(origin) ? origin : null;
 }
 
