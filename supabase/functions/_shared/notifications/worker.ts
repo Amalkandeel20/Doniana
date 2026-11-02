@@ -42,13 +42,14 @@ export interface WorkerConfig {
   statusCallbackUrl?: string;
 }
 
+// Kept short on purpose: Arabic SMS are billed per 70-character segment (67 when split).
 export const FALLBACK_TEMPLATES: Record<string, string> = {
-  booking_confirmed: "تم تأكيد موعدك في {{business}}: {{service}} {{date}} الساعة {{time}}. {{link}}",
-  owner_new_booking: "حجز جديد {{reference}}: {{name}} {{phone}} — {{service}} {{date}} {{time}}",
-  owner_cancellation: "إلغاء {{reference}}: {{name}} {{phone}} — {{service}} {{date}} {{time}}",
-  reminder_24h: "تذكير من {{business}}: موعدك ({{service}}) يوم {{date}} الساعة {{time}}. {{link}}",
-  cancelled_by_owner: "تم إلغاء موعدك في {{business}} يوم {{date}} الساعة {{time}}. للاستفسار يرجى التواصل معنا.",
-  appointment_changed: "تم تعديل موعدك في {{business}}: {{service}} {{date}} الساعة {{time}}. {{link}}",
+  booking_confirmed: "تم تأكيد موعدك يوم {{date}} الساعة {{time}}\nللتفاصيل أو الإلغاء: {{link}}",
+  owner_new_booking: "حجز جديد: {{name}} {{phone}}\n{{date}} {{time}}",
+  owner_cancellation: "إلغاء: {{name}} {{phone}}\n{{date}} {{time}}",
+  reminder_24h: "تذكير من {{business}}: موعدك {{date}} الساعة {{time}}",
+  cancelled_by_owner: "نعتذر، أُلغي موعدك {{date}} {{time}}. للاستفسار تواصلي معنا",
+  appointment_changed: "تغيّر موعدك إلى {{date}} الساعة {{time}}\nالتفاصيل: {{link}}",
 };
 
 export function renderTemplate(template: string, vars: Record<string, string>): string {

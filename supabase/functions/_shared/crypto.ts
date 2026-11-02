@@ -30,7 +30,8 @@ export async function hmacSha256(secret: string, message: string): Promise<Uint8
  */
 export async function deriveManageToken(secret: string, idempotencyKey: string): Promise<string> {
   if (secret.length < 32) throw new Error("MANAGE_TOKEN_SECRET must be at least 32 characters");
-  return base64Url(await hmacSha256(secret, `manage-link:v1:${idempotencyKey}`));
+  // 128 bits of the HMAC is plenty for an unguessable link and keeps SMS one segment shorter.
+  return base64Url((await hmacSha256(secret, `manage-link:v1:${idempotencyKey}`)).slice(0, 16));
 }
 
 export async function manageTokenHash(token: string): Promise<string> {

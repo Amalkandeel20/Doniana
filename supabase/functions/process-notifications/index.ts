@@ -1,6 +1,6 @@
 // Invoked every 30 s by pg_cron (see the platform migration). Protected by CRON_SECRET.
 import { timingSafeEqual } from "../_shared/crypto.ts";
-import { json } from "../_shared/http.ts";
+import { DEFAULT_SITE_URL, json } from "../_shared/http.ts";
 import { createSmsProvider } from "../_shared/notifications/providers.ts";
 import { finishArgs, processOutbox, type BeginResult, type OutboxStore } from "../_shared/notifications/worker.ts";
 import { env, serviceClient } from "../_shared/deno/runtime.ts";
@@ -32,7 +32,7 @@ Deno.serve(async (req) => {
   }
   const callbackBase = env.get("SMS_STATUS_CALLBACK_URL");
   const report = await processOutbox(store, createSmsProvider(env), {
-    siteUrl: env.get("SITE_URL") ?? "",
+    siteUrl: env.get("SITE_URL") || DEFAULT_SITE_URL,
     manageTokenSecret: env.get("MANAGE_TOKEN_SECRET") ?? "",
     statusCallbackUrl: callbackBase || undefined,
   });

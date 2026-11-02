@@ -5,7 +5,7 @@ import { deriveManageToken, manageTokenHash } from "./crypto.ts";
 import { handleAdminAccount, handleCreateBooking, handleManage, type Deps } from "./handlers.ts";
 import { HttpError, endpoint } from "./http.ts";
 import { TwilioSmsProvider, createSmsProvider, verifyTwilioSignature } from "./notifications/providers.ts";
-import { renderJob, renderTemplate, type DeliveryJob } from "./notifications/worker.ts";
+import { FALLBACK_TEMPLATES, renderJob, renderTemplate, type DeliveryJob } from "./notifications/worker.ts";
 
 const SECRET = "x".repeat(48);
 const env = (vars: Record<string, string>) => ({ get: (k: string) => vars[k] });
@@ -231,5 +231,26 @@ describe("admin-account handler", () => {
     const { db } = accountDb({ message: "A user with this email address has already been registered" });
     await expect(handleAdminAccount({ currentPassword: "old", newPassword: "short" }, "u1", deps(db), async () => true)).rejects.toMatchObject({ status: 400 });
     await expect(handleAdminAccount({ currentPassword: "old", newEmail: "x@y.com" }, "u1", deps(db), async () => true)).rejects.toMatchObject({ status: 409, code: "email_taken" });
+  });
+});
+
+describe("default SMS texts", () => {
+  // Worst-case values: long name, longest weekday, full manage link.
+  const vars = {
+    business: "DONIANA", name: "فاطمة عبد الرحمن", phone: "054-123-4567", service: "", price: "", reference: "DN-ABCDEF",
+    date: "الأربعاء 30/10/2026", time: "13:30", link: `https://donianabeauty.com/a#${"x".repeat(22)}`,
+  };
+  const segments = (n: number) => (n <= 70 ? 1 : Math.ceil(n / 67));
+  const budget: Record<string, number> = {
+    booking_confirmed: 2, reminder_24h: 1, owner_new_booking: 1, owner_cancellation: 1, cancelled_by_owner: 1, appointment_changed: 2,
+  };
+  for (const [event, max] of Object.entries(budget)) {
+    it(`${event} fits in ${max} segment(s)`, () => {
+      expect(segments(renderTemplate(FALLBACK_TEMPLATES[event]!, vars).length)).toBeLessThanOrEqual(max);
+    });
+  }
+
+  it("manage links carry a 22-character token", async () => {
+    expect(await deriveManageToken(SECRET, validBooking.idempotencyKey)).toMatch(/^[A-Za-z0-9_-]{22}$/);
   });
 });

@@ -17,6 +17,8 @@ export class HttpError extends Error {
 
 /** The public site is always allowed; ALLOWED_ORIGINS adds others (local dev, staging hosts). */
 export const SITE_ORIGINS = ["https://donianabeauty.com", "https://www.donianabeauty.com"];
+/** Base for links in SMS when SITE_URL is not configured. */
+export const DEFAULT_SITE_URL = SITE_ORIGINS[0];
 
 export function allowedOrigin(req: Request, env: Env): string | null {
   const origin = req.headers.get("origin");

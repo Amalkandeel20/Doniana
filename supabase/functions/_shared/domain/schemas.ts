@@ -49,7 +49,7 @@ export const createBookingRequestSchema = z.object({
 export type CreateBookingRequest = z.input<typeof createBookingRequestSchema>;
 
 export const manageRequestSchema = z.object({
-  token: z.string().regex(/^[A-Za-z0-9_-]{40,64}$/),
+  token: z.string().regex(/^[A-Za-z0-9_-]{22,64}$/),
   action: z.enum(["view", "cancel"]),
 });
 export type ManageRequest = z.infer<typeof manageRequestSchema>;

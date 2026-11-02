@@ -76,7 +76,7 @@ describe("notification worker", () => {
     expect(customer.body).toContain("تم تأكيد موعدك");
     expect(customer.body).toContain("10:00");
     const owner = provider.sent.find((m) => m.to === "+972500000000")!;
-    expect(owner.body).toContain(appointment.reference as string);
+    expect(owner.body).toContain("دنيا اختبار");
     expect(owner.body).not.toContain("/a#");
 
     // Running again sends nothing new: no duplicate SMS.
