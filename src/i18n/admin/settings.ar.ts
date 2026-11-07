@@ -333,6 +333,8 @@ export const settingsAr = {
       counter: "{chars} حرفاً · {segments} رسالة",
       counterHelp: "الرسائل العربية: 70 حرفاً للرسالة الواحدة، أو 67 لكل جزء في الرسائل الأطول. العدد تقريبي لأن المتغيّرات تُستبدل بقيم حقيقية.",
       unknownPlaceholder: "متغيّر غير معروف: {name}",
+      enabled: "إرسال هذه الرسالة",
+      disabledHelp: "متوقفة: لن تُرسل ولن تُحسب في التكلفة.",
       insert: "إضافة المتغيّر {name}",
       placeholders: {
         business: "اسم الصالون",

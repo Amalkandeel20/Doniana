@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -9,7 +9,7 @@ import { useAsync } from "@/hooks/useAsync";
 import { t } from "@/i18n";
 import { supabase } from "@/lib/supabase";
 import { toastSaved } from "../adminApi";
-import { EmptyText, LoadState, Section } from "./common";
+import { CheckboxRow, EmptyText, LoadState, Section } from "./common";
 import { must, NOTIFICATION_EVENTS, type NotificationEvent, TEMPLATE_PLACEHOLDERS, toastDbError } from "./data";
 
 const K = "admin.settings.settings.templates";
@@ -26,7 +26,9 @@ function smsSegments(text: string): number {
 }
 
 const fetchTemplates = async () => {
-  const rows = must<{ event: NotificationEvent; body_ar: string }[]>(await supabase.from("notification_templates").select("event, body_ar"));
+  const rows = must<{ event: NotificationEvent; body_ar: string; is_enabled: boolean }[]>(
+    await supabase.from("notification_templates").select("event, body_ar, is_enabled"),
+  );
   return NOTIFICATION_EVENTS.flatMap((event) => rows.filter((r) => r.event === event));
 };
 
@@ -42,7 +44,7 @@ export function TemplatesCard() {
         <div className="space-y-6">
           <p className="text-sm text-muted-foreground">{t(`${K}.counterHelp`)}</p>
           {data.map((row) => (
-            <TemplateForm key={row.event} event={row.event} initial={row.body_ar} />
+            <TemplateForm key={row.event} event={row.event} initial={row.body_ar} initialEnabled={row.is_enabled} />
           ))}
         </div>
       )}
@@ -50,7 +52,9 @@ export function TemplatesCard() {
   );
 }
 
-function TemplateForm({ event, initial }: { event: NotificationEvent; initial: string }) {
+function TemplateForm({ event, initial, initialEnabled }: { event: NotificationEvent; initial: string; initialEnabled: boolean }) {
+  const [enabled, setEnabled] = useState(initialEnabled);
+  const [toggling, setToggling] = useState(false);
   const { register, handleSubmit, reset, setValue, getValues, control, formState } = useForm<Values>({
     resolver: zodResolver(schema),
     defaultValues: { body_ar: initial },
@@ -87,12 +91,33 @@ function TemplateForm({ event, initial }: { event: NotificationEvent; initial: s
     }
   });
 
+  const toggle = async (next: boolean) => {
+    setToggling(true);
+    try {
+      must(await supabase.from("notification_templates").update({ is_enabled: next }).eq("event", event));
+      setEnabled(next);
+      toastSaved();
+    } catch (e) {
+      toastDbError(e);
+    } finally {
+      setToggling(false);
+    }
+  };
+
   const eventName = t(`admin.settings.notifications.events.${event}`);
   return (
     <form onSubmit={onSubmit} noValidate className="space-y-3 rounded-2xl border bg-white p-4">
       <Label htmlFor={id} className="text-base font-semibold">
         {eventName}
       </Label>
+      <CheckboxRow
+        id={`${id}-enabled`}
+        label={t(`${K}.enabled`)}
+        help={enabled ? undefined : t(`${K}.disabledHelp`)}
+        checked={enabled}
+        disabled={toggling}
+        onChange={(e) => void toggle(e.target.checked)}
+      />
       <div className="flex flex-wrap gap-2" role="group" aria-label={t(`${K}.text`)}>
         {TEMPLATE_PLACEHOLDERS.map((name) => (
           <button

@@ -8,6 +8,7 @@ import { randomUUID } from "node:crypto";
 
 let db: Db;
 let shaping: string;
+let enabledByDefault: Record<string, boolean>;
 const SECRET = "test-secret-test-secret-test-secret-0123456789";
 const config = { siteUrl: "https://doniana.example", manageTokenSecret: SECRET };
 
@@ -55,11 +56,14 @@ async function bookReal(startsAt: string) {
 beforeAll(async () => {
   db = await createTestDb();
   shaping = await serviceId(db, "eyebrow-shaping");
+  const rows = await db.query<{ event: string; is_enabled: boolean }>(`select event, is_enabled from public.notification_templates`);
+  enabledByDefault = Object.fromEntries(rows.map((r) => [r.event, r.is_enabled]));
 }, 120_000);
 afterAll(async () => db?.close());
 beforeEach(async () => {
   await db.exec(`delete from public.notification_outbox; delete from public.appointments;
-    update public.notification_settings set owner_phone = '+972500000000', sms_enabled = true, reminder_max_lateness_minutes = 60;`);
+    update public.notification_settings set owner_phone = '+972500000000', sms_enabled = true, reminder_max_lateness_minutes = 60;
+    update public.notification_templates set is_enabled = true;`);
   await openAllWeek(db, "00:00", "24:00");
 });
 
@@ -182,5 +186,18 @@ describe("notification worker", () => {
       `select provider_message_id from public.notification_outbox where appointment_id = $1 and event = 'booking_confirmed'`, [appointment.id]);
     await db.query(`select public.record_delivery_status($1, 'delivered')`, [row!.provider_message_id]);
     expect((await statuses(appointment.id)).booking_confirmed).toBe("delivered");
+  });
+
+  it("starts with only the reminder switched on, and skips switched-off messages", async () => {
+    expect(Object.entries(enabledByDefault).filter(([, on]) => on).map(([event]) => event)).toEqual(["reminder_24h"]);
+    await db.exec(`update public.notification_templates set is_enabled = (event = 'reminder_24h')`);
+    const { appointment } = await bookReal(await localInstant(db, localDateIn(3), "10:00"));
+    const provider = new RecordingProvider();
+    await processOutbox(sqlStore(db), provider, config);
+    expect(provider.sent).toHaveLength(0);
+    expect(await statuses(appointment.id)).toMatchObject({ booking_confirmed: "skipped", owner_new_booking: "skipped", reminder_24h: "pending" });
+    const [row] = await db.query<{ last_error: string }>(
+      `select last_error from public.notification_outbox where appointment_id = $1 and event = 'booking_confirmed'`, [appointment.id]);
+    expect(row!.last_error).toBe("message_disabled");
   });
 });

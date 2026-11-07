@@ -47,7 +47,7 @@ export const FALLBACK_TEMPLATES: Record<string, string> = {
   booking_confirmed: "تم تأكيد موعدك يوم {{date}} الساعة {{time}}\nللتفاصيل أو الإلغاء: {{link}}",
   owner_new_booking: "حجز جديد: {{name}} {{phone}}\n{{date}} {{time}}",
   owner_cancellation: "إلغاء: {{name}} {{phone}}\n{{date}} {{time}}",
-  reminder_24h: "تذكير من {{business}}: موعدك {{date}} الساعة {{time}}",
+  reminder_24h: "تذكير: موعدك في {{business}} غداً الساعة {{time}}",
   cancelled_by_owner: "نعتذر، أُلغي موعدك {{date}} {{time}}. للاستفسار تواصلي معنا",
   appointment_changed: "تغيّر موعدك إلى {{date}} الساعة {{time}}\nالتفاصيل: {{link}}",
 };
