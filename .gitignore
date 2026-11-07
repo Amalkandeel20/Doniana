@@ -14,3 +14,4 @@ supabase/functions/.env
 *.local
 .DS_Store
 lighthouse-report
+apply-on-staging.sql
