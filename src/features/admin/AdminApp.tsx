@@ -4,6 +4,7 @@ import { Spinner } from "@/components/ui/spinner";
 import { t } from "@/i18n";
 import { AdminLayout } from "./AdminLayout";
 import { AdminLogin } from "./AdminLogin";
+import { useAdminAppManifest } from "./useAdminAppManifest";
 import { useAdminSession } from "./useAdminSession";
 
 const CalendarPage = lazy(() => import("./pages/CalendarPage"));
@@ -17,6 +18,7 @@ const RevenuePage = lazy(() => import("./pages/RevenuePage"));
 
 export default function AdminApp() {
   const session = useAdminSession();
+  useAdminAppManifest();
 
   if (session.status === "loading") {
     return (
