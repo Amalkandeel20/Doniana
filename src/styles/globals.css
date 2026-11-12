@@ -47,6 +47,8 @@
 
   body {
     @apply bg-background text-foreground font-sans antialiased;
+    /* Safety net: nothing may make phones scroll sideways (clip, unlike hidden, keeps sticky headers). */
+    overflow-x: clip;
     font-feature-settings: "kern";
     text-rendering: optimizeLegibility;
   }

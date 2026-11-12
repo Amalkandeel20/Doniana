@@ -7,7 +7,7 @@ import { fetchBusinessInfo, fetchCatalog, fetchPortfolio } from "@/features/serv
 import { useAsync } from "@/hooks/useAsync";
 import { messages, t } from "@/i18n";
 import { cn } from "@/lib/utils";
-import { ARABIC_WEEKDAYS, formatDurationAr, formatPhoneForDisplay, formatShekels, whatsappLink } from "@/lib/format";
+import { ARABIC_WEEKDAYS, formatDurationAr, formatPhoneForDisplay, formatShekels, instagramHandle, whatsappLink } from "@/lib/format";
 import { placeholders } from "@/lib/placeholders";
 import { publicImageUrl } from "@/lib/supabase";
 import type { Service, ServiceCategory } from "@/types/models";
@@ -193,7 +193,7 @@ export default function HomePage() {
       {/* Contact */}
       <section id="contact" className="scroll-mt-20 py-16 sm:py-24">
         <div className="container grid gap-10 md:grid-cols-2">
-          <div>
+          <div className="min-w-0">
             <p className="eyebrow-label">Contact</p>
             <h2 className="mt-2 font-heading text-4xl">{t("home.contactTitle")}</h2>
             <ul className="mt-6 space-y-3">
@@ -204,7 +204,7 @@ export default function HomePage() {
                 <ContactRow icon={<Phone />} href={`tel:${settings.contact_phone}`} label={t("home.call")} value={formatPhoneForDisplay(settings.contact_phone)} />
               )}
               {settings?.instagram_url && (
-                <ContactRow icon={<AtSign />} href={settings.instagram_url} label={t("home.instagram")} value={settings.instagram_url.replace(/^https:\/\/(www\.)?instagram\.com\//, "@").replace(/\/$/, "")} />
+                <ContactRow icon={<AtSign />} href={settings.instagram_url} label={t("home.instagram")} value={instagramHandle(settings.instagram_url)} />
               )}
               {settings?.address_ar && (
                 <ContactRow icon={<MapPin />} href={settings.maps_url ?? undefined} label={t("home.location")} value={settings.address_ar} />
