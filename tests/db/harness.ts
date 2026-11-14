@@ -153,6 +153,7 @@ export interface BookArgs {
   source?: "online" | "admin";
   override?: boolean;
   notify?: boolean;
+  overlap?: boolean;
 }
 
 export interface Booked {
@@ -165,7 +166,7 @@ export async function book(db: Db, args: BookArgs): Promise<Booked> {
   const key = args.key ?? randomUUID();
   const token = args.token ?? `tok_${randomUUID().replace(/-/g, "")}${randomUUID().replace(/-/g, "")}`;
   const [row] = await db.query<{ r: { replayed: boolean; appointment: Booked["appointment"] } }>(
-    `select public.book_appointment($1, $2, $3, $4::uuid[], $5, $6, $7, $8, $9::public.appointment_source, $10, null, null, $11) as r`,
+    `select public.book_appointment($1, $2, $3, $4::uuid[], $5, $6, $7, $8, $9::public.appointment_source, $10, null, null, $11, $12) as r`,
     [
       key,
       sha256Hex(token),
@@ -178,6 +179,7 @@ export async function book(db: Db, args: BookArgs): Promise<Booked> {
       args.source ?? "online",
       args.override ?? false,
       args.notify ?? true,
+      args.overlap ?? false,
     ],
   );
   return { ...row!.r, token };

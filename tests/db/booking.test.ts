@@ -140,6 +140,29 @@ describe("book_appointment", () => {
     await book(db, { service: svc.shaping!, startsAt: await localInstant(db, date, "11:15") });
   });
 
+  it("lets the admin deliberately put two clients at the same time, and only the admin", async () => {
+    const date = localDateIn(4);
+    const at = await localInstant(db, date, "10:00");
+    await book(db, { service: svc.lamination!, startsAt: at });
+    await expectDbError(book(db, { service: svc.shaping!, startsAt: at, source: "admin" }), "slot_unavailable");
+    await expectDbError(book(db, { service: svc.shaping!, startsAt: at, overlap: true }), "forbidden");
+    const shared = await book(db, { service: svc.shaping!, startsAt: at, source: "admin", overlap: true, name: "صديقة" });
+    expect(shared.appointment.status).toBe("confirmed");
+    // A normal booking still cannot land on either of them, whichever way round.
+    await expectDbError(book(db, { service: svc.shaping!, startsAt: await localInstant(db, date, "10:05"), source: "admin" }), "slot_unavailable");
+    await expectDbError(book(db, { service: svc.shaping!, startsAt: await localInstant(db, date, "11:00") }), "slot_unavailable");
+  });
+
+  it("keeps a normal appointment from being moved onto a shared one", async () => {
+    const date = localDateIn(5);
+    await book(db, { service: svc.shaping!, startsAt: await localInstant(db, date, "12:00"), source: "admin", overlap: true });
+    const other = await book(db, { service: svc.shaping!, startsAt: await localInstant(db, date, "14:00") });
+    await expectDbError(
+      db.query(`update public.appointments set starts_at = starts_at - interval '2 hours', ends_at = ends_at - interval '2 hours', occupied_until = occupied_until - interval '2 hours' where id = $1`, [other.appointment.id]),
+      "overlaps a shared appointment",
+    );
+  });
+
   it("does not let cancelled appointments block availability", async () => {
     const startsAt = await localInstant(db, localDateIn(4), "12:00");
     const first = await book(db, { service: svc.shaping!, startsAt });

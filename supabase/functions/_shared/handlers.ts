@@ -193,6 +193,7 @@ export async function handleAdminCreate(body: unknown, adminUserId: string, deps
     p_customer_phone: normalizeIsraeliMobile(input.customerPhone)!,
     p_source: "admin",
     p_admin_override: input.allowOutsideHours,
+    p_allow_overlap: input.allowOverlap,
     p_notes: input.notes || null,
     p_actor_user_id: adminUserId,
     p_notify_customer: input.notifyCustomer,

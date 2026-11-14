@@ -63,6 +63,7 @@ export const adminCreateAppointmentSchema = z.object({
   customerPhone: customerPhoneSchema,
   notes: z.string().max(1000).optional().default(""),
   allowOutsideHours: z.boolean().default(false),
+  allowOverlap: z.boolean().default(false),
   notifyCustomer: z.boolean().default(true),
 });
 export type AdminCreateAppointment = z.input<typeof adminCreateAppointmentSchema>;

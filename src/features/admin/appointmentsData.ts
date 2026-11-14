@@ -128,6 +128,8 @@ export interface AppointmentInput {
   customerPhone: string;
   notes: string;
   allowOutsideHours: boolean;
+  /** New appointments only: may share its time with another appointment. */
+  allowOverlap?: boolean;
   notifyCustomer: boolean;
 }
 

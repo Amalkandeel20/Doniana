@@ -40,6 +40,7 @@ const formSchema = z.object({
   customerPhone: customerPhoneSchema,
   notes: z.string().max(1000, `${K}.errors.notesLong`),
   allowOutsideHours: z.boolean(),
+  allowOverlap: z.boolean(),
   notifyCustomer: z.boolean(),
 });
 type FormValues = z.infer<typeof formSchema>;
@@ -123,6 +124,7 @@ function FormBody({
         customerPhone: appointment.customer_phone ? toLocalPhone(appointment.customer_phone) : "",
         notes: appointment.notes ?? "",
         allowOutsideHours: false,
+        allowOverlap: false,
         notifyCustomer: true,
       };
     }
@@ -136,6 +138,7 @@ function FormBody({
       customerPhone: "",
       notes: "",
       allowOutsideHours: false,
+      allowOverlap: false,
       notifyCustomer: true,
     };
   }, [appointment, prefill, originalAddonIds]);
@@ -220,6 +223,7 @@ function FormBody({
       customerPhone: normalizeIsraeliMobile(values.customerPhone) ?? values.customerPhone,
       notes: values.notes.trim(),
       allowOutsideHours: values.allowOutsideHours,
+      allowOverlap: !appointment && values.allowOverlap,
       notifyCustomer: values.notifyCustomer,
     };
     try {
@@ -406,6 +410,17 @@ function FormBody({
             </span>
           </span>
         </label>
+        {!appointment && (
+          <label className="flex cursor-pointer items-start gap-3">
+            <Checkbox className="mt-0.5" aria-describedby="appt-overlap-hint" data-testid="appt-allow-overlap" {...register("allowOverlap")} />
+            <span>
+              <span className="block font-medium">{t(`${K}.allowOverlap`)}</span>
+              <span id="appt-overlap-hint" className="block text-sm text-muted-foreground">
+                {t(`${K}.allowOverlapHint`)}
+              </span>
+            </span>
+          </label>
+        )}
         <label className="flex cursor-pointer items-start gap-3">
           <Checkbox className="mt-0.5" {...register("notifyCustomer")} />
           <span className="font-medium">{t(appointment ? `${K}.notifyEdit` : `${K}.notifyCreate`)}</span>
